@@ -74,10 +74,17 @@ class RDebugLinkMapChangedHook(pwndbg.gdblib.bpoint.BreakpointEvent):
     location, and watching for trigger events, so that we can notify other bits
     of pwndbg that the contents of the `link_map()` function will be different.
 
-    [1]: https://elixir.bootlin.com/glibc/glibc-2.37/source/elf/link.h#L52
-    """
+from __future__ import annotations
 
-    skip_this = True
+import argparse
+
+import pwndbg.color.message as message
+import pwndbg.gdblib.dynamic
+
+class DynamicEvent:
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.skip_this = True
 
     def on_breakpoint_hit(self):
         # Skip every other trigger, we only care about the completed link map
@@ -86,10 +93,12 @@ class RDebugLinkMapChangedHook(pwndbg.gdblib.bpoint.BreakpointEvent):
             self.skip_this = False
             return
         else:
-            self.skip_ths = True
+            self.skip_this = True
 
         # Clear the cache that is tied to link map updates, and signal all of
         # the interested parties that this event has occurred.
+        for event in REGISTERED_BP_EVENTS:
+            event.on_breakpoint_hit()
         pwndbg.lib.cache.clear_cache("link_map")
         for listener in R_DEBUG_LINK_MAP_CHANGED_LISTENERS:
             listener()

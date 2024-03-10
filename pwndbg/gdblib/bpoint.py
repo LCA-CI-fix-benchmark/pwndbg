@@ -41,6 +41,14 @@ class BreakpointEvent(gdb.Breakpoint):
     after a breakpoint is hit.
     """
 
+from __future__ import annotations
+
+import argparse
+
+import pwndbg.color.message as message
+import pwndbg.gdblib.dynamic
+
+class BreakpointEvent:
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         REGISTERED_BP_EVENTS.add(id(self))

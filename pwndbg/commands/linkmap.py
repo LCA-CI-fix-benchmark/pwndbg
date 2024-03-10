@@ -20,6 +20,12 @@ def linkmap():
     for obj in pwndbg.gdblib.dynamic.link_map():
         name = obj.name().decode("utf-8")
         if name == "":
+            name = "(None)"
+        rows.append([f"{obj.start:#x}", name, f"{obj.load_bias:x}", f"{obj.dyn_addr:x}"])
+    if is_first:
+        print(message.info("No segments found."))
+    else:
+        print(message.table(rows))
             name = "<Unknown"
             if is_first:
                 is_first = False

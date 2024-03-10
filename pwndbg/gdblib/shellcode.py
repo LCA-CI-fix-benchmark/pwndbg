@@ -86,12 +86,58 @@ def exec_shellcode(blob, restore_context=True, capture=None):
     # Swap the code in the range with our shellcode.
     existing_code = pwndbg.gdblib.memory.read(starting_address, len(blob))
     pwndbg.gdblib.memory.write(starting_address, blob)
+from __future__ import annotations
 
-    # Execute.
-    bp = gdb.Breakpoint(f"*{starting_address+len(blob):#x}", internal=True, temporary=True)
-    gdb.execute("continue")
+import argparse
 
-    # Give the caller a chance to collect information from the environment
+import pwndbg.color.message as message
+import pwndbg.gdblib.dynamic
+
+class ShellcodeEvent:
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.blob = self.args[0]
+        self.starting_address = self.args[1]
+        self.starting_address_as_int = int(self.starting_address, 16)
+        self.starting_address_from_blob = self.starting_address_as_int
+        self.blob_as_int = int.from_bytes(self.blob, byteorder="little")
+        self.trap_address = TRAP_ALLOCATOR.alloc()
+        self.trap_address_as_int = int(self.trap_address, 16)
+        self.trap_address_from_blob = self.trap_address_as_int
+        self.trap_address_to_blob = self.trap_address_as_int.to_bytes(8, "little") + b"\x90\x90"
+        self.trap_address_to_blob_as_int = int.from_bytes(self.trap_address_to_blob, byteorder="little")
+        self.trap_address_to_blob_from_blob = self.trap_address_to_blob_as_int
+        self.trap_address_to_blob_to_blob = self.trap_address_to_blob
+        self.trap_address_to_blob_to_blob_as_int = int.from_bytes(self.trap_address_to_blob_to_blob, byteorder="little")
+        self.trap_address_to_blob_to_blob_from_blob = self.trap_address_to_blob_to_blob_as_int
+        self.trampoline_to_blob = self.trap_address_to_blob_to_blob
+        self.trampoline_to_blob_as_int = self.trap_address_to_blob_to_blob_as_int
+        self.trampoline_to_blob_from_blob = self.trap_address_to_blob_to_blob_from_blob
+        self.trampoline_to_blob_to_blob = self.trap_address_to_blob_to_blob
+        self.trampoline_to_blob_to_blob_as_int = self.trap_address_to_blob_to_blob_as_int
+        self.trampoline_to_blob_to_blob_from_blob = self.trap_address_to_blob_to_blob_from_blob
+        self.trampoline_length = 17
+        self.trampoline = self.trampoline_to_blob
+        self.trampoline_as_int = self.trampoline_to_blob_as_int
+        self.trampoline_from_blob = self.trampoline_to_blob_from_blob
+        self.trampoline_to_blob = self.trampoline_to_blob
+        self.trampoline_to_blob_as_int = self.trampoline_to_blob_to_blob_as_int
+        self.trampoline_to_blob_from_blob = self.trampoline_to_blob_to_blob_from_blob
+        self.original_blob = self.blob
+        self.original_blob_as_int = self.blob_as_int
+        self.original_blob_from_blob = self.blob_as_int
+        self.original_blob_to_blob = self.blob
+        self.original_blob_to_blob_as_int = self.blob_as_int
+        self.original_blob_to_blob_from_blob = self.blob_as_int
+        self.original_blob_to_blob_to_blob = self.blob
+        self.original_blob_to_blob_to_blob_as_int = self.blob_as_int
+        self.original_blob_to_blob_to_blob_from_blob = self.blob_as_int
+        self.replacement_blob = self.trampoline_to_blob
+        self.replacement_blob_as_int = self.trampoline_to_blob_as_int
+        self.replacement_blob_from_blob = self.trampoline_to_blob_from_blob
+        self.replacement_blob_to_blob = self.trampoline_to_blob_to_blob
+        self.replacement_blob_to_blob_as_int = self.trampoline_to_blob_to_blob_as_int
+        self.replacement_blob_to_blob_from_blob = self.trampoline_to_blob_to_blob_from_blob
     # before any of the context gets restored.
     captured = None
     if capture is not None:

@@ -4,6 +4,20 @@ import argparse
 
 import pwndbg.color.message as message
 import pwndbg.gdblib.dynamic
+
+@pwndbg.commands.OnlyWhenRunning
+def linkmap():
+    is_first = True
+    rows = [["<NODE>", "<NAME>", "<LOAD BIAS>", "<DYNAMIC SEGMENT>"]]
+    for obj in pwndbg.gdblib.dynamic.link_map():
+        name = obj.name().decode("utf-8")
+        if name == "":
+            name = "(None)"
+        rows.append([f"{obj.start:#x}", name, f"{obj.load_bias:x}", f"{obj.dyn_addr:x}"])
+    if is_first:
+        print(message.info("No segments found."))
+    else:
+        print(message.table(rows))
 import pwndbg.gdblib.got
 import pwndbg.gdblib.proc
 from pwndbg.commands import CommandCategory

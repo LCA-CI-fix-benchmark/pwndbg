@@ -178,12 +178,24 @@ class TrapAllocator:
         Deletes all memory mappings and frees all addresses.
         """
         size = self.block_capacity * self.slot_size
-        while len(self.blocks) > 0:
-            pwndbg.gdblib.shellcode
+from __future__ import annotations
 
+import argparse
 
-# The allocator we use for our trap addresses.
-TRAP_ALLOCATOR = TrapAllocator()
+import pwndbg.color.message as message
+import pwndbg.gdblib.dynamic
+
+class GOTEvent:
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.blocks = []
+
+    def on_breakpoint_hit(self):
+        # Clear the cache that is tied to GOT updates, and signal all of
+        # the interested parties that this event has occurred.
+        self.blocks = []
+        for event in REGISTERED_BP_EVENTS:
+            event.on_breakpoint_hit()
 
 # Whether the GOT tracking is currently enabled.
 GOT_TRACKING = False
