@@ -41,12 +41,13 @@ class BreakpointEvent(gdb.Breakpoint):
     after a breakpoint is hit.
     """
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        REGISTERED_BP_EVENTS.add(id(self))
+
+class BreakpointEvent(object):
+    def __init__(self, bp: gdb.Breakpoint):
+        self.bp = bp
 
     def delete(self):
-        REGISTERED_BP_EVENTS.remove(id(self))
+        self.bp.delete()
         super().delete()
 
     def on_breakpoint_hit(self):

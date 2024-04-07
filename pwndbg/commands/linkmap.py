@@ -20,6 +20,16 @@ def linkmap():
     for obj in pwndbg.gdblib.dynamic.link_map():
         name = obj.name().decode("utf-8")
         if name == "":
+            name = "[anon]"
+
+        if is_first:
+            is_first = False
+        else:
+            rows.append(["", "", "", ""])
+
+        rows.append([obj.l_addr, name, obj.l_addr, obj.l_addr])
+
+    return pwndbg.commands.FormatOutput.format_table(rows)
             name = "<Unknown"
             if is_first:
                 is_first = False

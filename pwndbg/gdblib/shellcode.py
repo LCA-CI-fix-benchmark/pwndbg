@@ -87,11 +87,24 @@ def exec_shellcode(blob, restore_context=True, capture=None):
     existing_code = pwndbg.gdblib.memory.read(starting_address, len(blob))
     pwndbg.gdblib.memory.write(starting_address, blob)
 
-    # Execute.
-    bp = gdb.Breakpoint(f"*{starting_address+len(blob):#x}", internal=True, temporary=True)
-    gdb.execute("continue")
+class Shellcode:
+    def __init__(self, blob: bytes, starting_address: int, trap_addresses: list):
+        self.blob = blob
+        self.starting_address = starting_address
+        self.trap_addresses = trap_addresses
 
-    # Give the caller a chance to collect information from the environment
+    def execute(self):
+        bp = gdb.Breakpoint(f"*{starting_address+len(blob):#x}", internal=True, temporary=True)
+        gdb.execute("continue")
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self.delete()
+
+    def delete(self):
+        self.bp.delete()
     # before any of the context gets restored.
     captured = None
     if capture is not None:
