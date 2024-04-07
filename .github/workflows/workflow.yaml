@@ -1,12 +1,5 @@
 name: Unit tests
-on:
-  push:
-    branches:
-      - dev
-    paths:
-      - '!mkdocs.yml'
-      - '!docs/**'      
-  pull_request:
+on: push
 
 jobs:
   tests:
@@ -51,7 +44,7 @@ jobs:
         ./.venv/bin/coverage combine
         ./.venv/bin/coverage xml
 
-    - name: "Upload coverage to Codecov"
+    - name: Upload coverage to Codecov
       if: matrix.os == 'ubuntu-22.04'
       uses: codecov/codecov-action@v3
 
