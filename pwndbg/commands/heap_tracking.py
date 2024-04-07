@@ -1,6 +1,8 @@
+```python
 import argparse
 
 import pwndbg.chain
+```
 import pwndbg.commands
 import pwndbg.gdblib.heap_tracking
 

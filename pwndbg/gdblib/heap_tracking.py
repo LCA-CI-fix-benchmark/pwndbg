@@ -44,13 +44,13 @@ are explicitly documented and checked to be valid for the current inferior, so
 that it may be immediately clear to the user that something has gone wrong if
 they happen to not be valid. However, be aware that there may be assumptions
 that were not made explicit.
-
+```python
 """
 
 import itertools
 import gdb
 from sortedcontainers import SortedDict
-
+```
 import pwndbg.gdblib
 from pwndbg.color import message
 
