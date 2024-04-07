@@ -49,8 +49,6 @@ that were not made explicit.
 
 import itertools
 import gdb
-from sortedcontainers import SortedDict
-
 import pwndbg.gdblib
 from pwndbg.color import message
 
