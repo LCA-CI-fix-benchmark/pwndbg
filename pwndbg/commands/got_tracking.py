@@ -1,9 +1,17 @@
 from __future__ import annotations
 
 import argparse
-
 import pwndbg.color.message as message
 import pwndbg.gdblib.dynamic
+
+
+def linkmap():
+    is_first = True
+    rows = [["<NODE>", "<NAME>", "<LOAD BIAS>", "<DYNAMIC SEGMENT>"]]
+    for obj in pwndbg.gdblib.dynamic.link_map():
+        name = obj.name().decode("utf-8")
+        if name == "":
+            pass
 import pwndbg.gdblib.got
 import pwndbg.gdblib.proc
 from pwndbg.commands import CommandCategory

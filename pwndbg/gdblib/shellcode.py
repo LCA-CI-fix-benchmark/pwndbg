@@ -91,7 +91,7 @@ def exec_shellcode(blob, restore_context=True, capture=None):
     bp = gdb.Breakpoint(f"*{starting_address+len(blob):#x}", internal=True, temporary=True)
     gdb.execute("continue")
 
-    # Give the caller a chance to collect information from the environment
+    # Give the caller a chance to collect information from the environment.
     # before any of the context gets restored.
     captured = None
     if capture is not None:

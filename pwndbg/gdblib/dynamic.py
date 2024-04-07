@@ -86,10 +86,10 @@ class RDebugLinkMapChangedHook(pwndbg.gdblib.bpoint.BreakpointEvent):
             self.skip_this = False
             return
         else:
-            self.skip_ths = True
+            self.skip_this = True
 
-        # Clear the cache that is tied to link map updates, and signal all of
-        # the interested parties that this event has occurred.
+        # Clear the cache that is tied to link map updates, 
+        # and signal all of the interested parties that this event has occurred.
         pwndbg.lib.cache.clear_cache("link_map")
         for listener in R_DEBUG_LINK_MAP_CHANGED_LISTENERS:
             listener()

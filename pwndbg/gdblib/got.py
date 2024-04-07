@@ -179,9 +179,9 @@ class TrapAllocator:
         """
         size = self.block_capacity * self.slot_size
         while len(self.blocks) > 0:
-            pwndbg.gdblib.shellcode
-
-
+            self.blocks.pop()
+        
+        
 # The allocator we use for our trap addresses.
 TRAP_ALLOCATOR = TrapAllocator()
 
