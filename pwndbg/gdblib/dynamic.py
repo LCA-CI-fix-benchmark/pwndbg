@@ -84,7 +84,6 @@ class RDebugLinkMapChangedHook(pwndbg.gdblib.bpoint.BreakpointEvent):
         # that is available after the library is loaded.
         if self.skip_this:
             self.skip_this = False
-            return
         else:
             self.skip_ths = True
 

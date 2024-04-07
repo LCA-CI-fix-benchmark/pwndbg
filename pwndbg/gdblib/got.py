@@ -178,12 +178,21 @@ class TrapAllocator:
         Deletes all memory mappings and frees all addresses.
         """
         size = self.block_capacity * self.slot_size
-        while len(self.blocks) > 0:
-            pwndbg.gdblib.shellcode
+        # Clear the trap addresses from the GOT.
+        gdb.execute("set %s = 0x0" % self.addr)
 
+        # Allocate a new trap address for the instruction that was overwritten.
+        trap_address = TRAP_ALLOCATOR.allocate_trap()
+        gdb.execute("set %s = 0x%x" % (self.addr, trap_address))
 
-# The allocator we use for our trap addresses.
-TRAP_ALLOCATOR = TrapAllocator()
+        # Create a breakpoint at the instruction that was overwritten.
+        bp = gdb.Breakpoint(trap_address, internal=True, temporary=True)
+        bp.delete()
+
+        # Execute.
+        gdb.execute("continue")
+
+        # Give the caller a chance to collect information from the environment
 
 # Whether the GOT tracking is currently enabled.
 GOT_TRACKING = False
