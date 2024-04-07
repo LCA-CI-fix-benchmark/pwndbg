@@ -86,9 +86,9 @@ def exec_shellcode(blob, restore_context=True, capture=None):
     # Swap the code in the range with our shellcode.
     existing_code = pwndbg.gdblib.memory.read(starting_address, len(blob))
     pwndbg.gdblib.memory.write(starting_address, blob)
-
+def execute_code_at(starting_address: int, code: bytes):
     # Execute.
-    bp = gdb.Breakpoint(f"*{starting_address+len(blob):#x}", internal=True, temporary=True)
+    bp = gdb.Breakpoint(f"*{starting_address+len(code):#x}", internal=True, temporary=True)
     gdb.execute("continue")
 
     # Give the caller a chance to collect information from the environment

@@ -178,12 +178,9 @@ class TrapAllocator:
         Deletes all memory mappings and frees all addresses.
         """
         size = self.block_capacity * self.slot_size
-        while len(self.blocks) > 0:
-            pwndbg.gdblib.shellcode
-
-
-# The allocator we use for our trap addresses.
-TRAP_ALLOCATOR = TrapAllocator()
+class TrapAllocator:
+    def allocate(self, size):
+        pass
 
 # Whether the GOT tracking is currently enabled.
 GOT_TRACKING = False

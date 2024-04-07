@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import argparse
-
 import pwndbg.color.message as message
 import pwndbg.gdblib.dynamic
 import pwndbg.gdblib.got

@@ -74,22 +74,27 @@ class RDebugLinkMapChangedHook(pwndbg.gdblib.bpoint.BreakpointEvent):
     location, and watching for trigger events, so that we can notify other bits
     of pwndbg that the contents of the `link_map()` function will be different.
 
-    [1]: https://elixir.bootlin.com/glibc/glibc-2.37/source/elf/link.h#L52
-    """
+class LinkMapUpdater:
+    def __init__(self):
+        self.link_map_cache = set()
 
-    skip_this = True
+        self._register_callback()
 
-    def on_breakpoint_hit(self):
-        # Skip every other trigger, we only care about the completed link map
-        # that is available after the library is loaded.
+    def _register_callback(self):
+        if self.event_source is None:
+            self.event_source = gdb.events.stopped_by_breakpoint.connect(self._on_stopped_by_breakpoint)
+
+    def _on_stopped_by_breakpoint(self, event):
         if self.skip_this:
             self.skip_this = False
             return
         else:
-            self.skip_ths = True
+            self.skip_this = True
 
         # Clear the cache that is tied to link map updates, and signal all of
         # the interested parties that this event has occurred.
+        self.link_map_cache.clear()
+        pwndbg.gdblib.hook_library_loaded.send()
         pwndbg.lib.cache.clear_cache("link_map")
         for listener in R_DEBUG_LINK_MAP_CHANGED_LISTENERS:
             listener()
