@@ -92,6 +92,7 @@ def exec_shellcode(blob, restore_context=True, capture=None):
     gdb.execute("continue")
 
     # Give the caller a chance to collect information from the environment
+    # before we resume execution.
     # before any of the context gets restored.
     captured = None
     if capture is not None:

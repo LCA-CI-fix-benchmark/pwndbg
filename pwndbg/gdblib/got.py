@@ -178,8 +178,41 @@ class TrapAllocator:
         Deletes all memory mappings and frees all addresses.
         """
         size = self.block_capacity * self.slot_size
-        while len(self.blocks) > 0:
-            pwndbg.gdblib.shellcode
+class TrapAllocator(object):
+    """
+    The trap allocator is responsible for allocating and freeing
+    trap addresses for GOT overrides.
+    """
+    def __init__(self):
+        # Initialize the block map.
+        self.blocks = [[]]
+
+    def allocate(self, size):
+        # Find a block that is large enough.
+        for b in self.blocks:
+            if size <= len(b):
+                return b[:size]
+
+        # No block is large enough, so we need to allocate a new one.
+        try:
+            b = self.find_hole(size)
+        except NoHoleError:
+            print("No enough space to allocate trap addresses.")
+            return None
+
+        # Allocate the hole.
+        self.blocks.append(b)
+        return b
+
+    def find_hole(self, size):
+        raise NotImplementedError
+
+    def free(self, block):
+        # Remove the block from the block map.
+        self.blocks.remove(block)
+
+    def __str__(self):
+        return "TrapAllocator"
 
 
 # The allocator we use for our trap addresses.
