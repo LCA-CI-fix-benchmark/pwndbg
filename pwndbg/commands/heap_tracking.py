@@ -1,3 +1,4 @@
+import pwndbg.gdblib.heap_tracking as ht
 import argparse
 
 import pwndbg.chain
