@@ -85,6 +85,15 @@ def test_empty_context_sections(start_binary, sections):
     assert pwndbg.gdblib.config.context_sections.value == default_ctx_sects
     assert gdb.execute("context", to_string=True) != ""
 
+# Add Missing line
+import pwndbg.gdblib.heap_tracking as heap_tracking
+
+# Add Missing line
+heap_tracking.enable_heap_tracking = True
+
+# Move the import statement to the top
+from sortedcontainers import SortedDict
+
     # Actual test check
     gdb.execute(f"set context-sections {sections}", to_string=True)
     assert pwndbg.gdblib.config.context_sections.value == ""

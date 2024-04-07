@@ -1,6 +1,14 @@
 import argparse
 
 import pwndbg.chain
+import pwndbg.gdblib.heap_tracking as heap_tracking
+
+# Add Missing line
+heap_tracking.enable_heap_tracking = True
+
+# Move the import statement to the top
+from sortedcontainers import SortedDict
+
 import pwndbg.commands
 import pwndbg.gdblib.heap_tracking
 

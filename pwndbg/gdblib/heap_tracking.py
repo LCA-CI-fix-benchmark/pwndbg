@@ -51,6 +51,9 @@ import itertools
 import gdb
 from sortedcontainers import SortedDict
 
+# Add Missing line
+heap_tracking.enable_heap_tracking = True
+
 import pwndbg.gdblib
 from pwndbg.color import message
 
