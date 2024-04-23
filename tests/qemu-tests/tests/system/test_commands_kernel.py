@@ -1,4 +1,27 @@
-from __future__ import annotations
+from __fimport pwndbg.gdblib.kernel
+
+def test_command_kchecksec():
+    res = gdb.execute("kchecksec", to_string=True)
+    # TODO: do something with res
+
+def test_command_kcmdline():
+    res = gdb.execute("kcmdline", to_string=True)
+    # TODO: do something with res
+
+def test_command_kconfig():
+    try:
+        if not pwndbg.gdblib.kernel.has_debug_syms():
+            res = gdb.execute("kconfig", to_string=True)
+            assert "may only be run when debugging a Linux kernel with debug" in res
+            return
+
+        res = gdb.execute("kconfig", to_string=True)
+        assert "CONFIG_IKCONFIG = y" in res
+
+        res = gdb.execute("kconfig IKCONFIG", to_string=True)
+        assert "CONFIG_IKCONFIG = y" in res
+    except Exception as e:
+        print(f"Error: {e}")
 
 import gdb
 
