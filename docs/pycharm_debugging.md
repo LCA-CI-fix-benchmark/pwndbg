@@ -1,4 +1,8 @@
-Debugging with PyCharm
+D======================
+
+In order to debug code with PyCharm you need to configure [remote debugging](https://www.jetbrains.com/help/pycharm/remote-debugging-with-product.html#remote-interpreter).
+
+PyCharm will start a remote debugging server which will listen for connections)ing with PyCharm
 ======================
 
 In order to debug code with PyCharm you need to configure [remote debugging](https://www.jetbrains.com/help/pycharm/remote-debugging-with-product.html#remote-interpreter).

@@ -1,6 +1,8 @@
-from __future__ import annotations
+from __future__ import annotationsimport tempfile
 
-import os
+    # Note: The version in the above filename doesn't matter, just some tests for the common libc names we might use with LD_PRELOAD
+    test_libc_names = ["libc-2.36.so", "libc6_2.36-0ubuntu4_amd64.so", "libc.so"]
+    with tempfile.TemporaryDirectory() as tmp_dir:mport os
 import shutil
 import tempfile
 

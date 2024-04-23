@@ -2,9 +2,7 @@
 
 Pwndbg has a great deal of useful features.  You can a list of all available commands at any time by typing the `pwndbg` command.  Here's a small subset which are easy to capture in screenshots.
 
-## Arguments
-
-All function call sites are annotated with the arguments to those functions.  This works best with debugging symbols, but also works in the most common case where an imported function (e.g. libc function via GOT or PLT) is used.
+## Arguments![](path/to/procinfo.png)All function call sites are annotated with the arguments to those functions.  This works best with debugging symbols, but also works in the most common case where an imported function (e.g. libc function via GOT or PLT) is used.
 
 ![](caps/arguments_getenv.png)  
 ![](caps/arguments_memcpy.png)  
