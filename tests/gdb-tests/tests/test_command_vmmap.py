@@ -8,7 +8,10 @@ import pytest
 import pwndbg
 import tests
 
-CRASH_SIMPLE_BINARY = tests.binaries.get("crash_simple.out.hardcoded")
+CRASH_SIMPLE_    next(i for i in expected_maps if i[-1] == "[vdso]")[-1] = "load2"
+
+    vdso_map = next(i for i in expected_maps if i[-1] == "[vvar]")
+    expected_maps.remove(vdso_map)RY = tests.binaries.get("crash_simple.out.hardcoded")
 BINARY_ISSUE_1565 = tests.binaries.get("issue_1565.out")
 
 
