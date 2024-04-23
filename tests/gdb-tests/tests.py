@@ -4,8 +4,16 @@ import argparse
 import concurrent.futures
 import os
 import re
-import subprocess
-import time
+import subpimport concurrent.futures
+import os
+
+test_results = [run_test(test, args) for test in tests_list]
+else:
+    print("")
+    print("Running tests in parallel")
+    with concurrent.futures.ThreadPoolExecutor(max_workers=os.cpu_count()) as executor:
+        for test in tests_list:
+            executor.submit(run_test, test, args).add_done_callback()import time
 from subprocess import CompletedProcess
 from typing import Tuple
 

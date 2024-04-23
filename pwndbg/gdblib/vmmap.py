@@ -1,5 +1,7 @@
 """
-Routines to enumerate mapped memory, and attempt to associate
+Routines to enumerate mapped memory, and attempt to asso""",
+    param_class=gdb.PARAM_ENUM,
+)ate
 address ranges with various ELF files and permissions.
 
 The reason that we need robustness is that not every operating

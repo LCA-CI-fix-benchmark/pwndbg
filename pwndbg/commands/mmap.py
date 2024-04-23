@@ -7,7 +7,14 @@ import pwndbg.color.message as message
 import pwndbg.commands
 import pwndbg.enhance
 import pwndbg.gdblib.file
-import pwndbg.gdblib.shellcode
+import pwndbg.gdblib                m = message.error
+                print(
+                    m(
+                        f"""\
+Trying to mmap with MAP_FIXED for an address range that collides with {len(collisions)}
+existing range{'s' if len(collisions) > 1 else ''}:\
+"""
+                ))ode
 import pwndbg.lib.memory
 import pwndbg.wrappers.checksec
 import pwndbg.wrappers.readelf
