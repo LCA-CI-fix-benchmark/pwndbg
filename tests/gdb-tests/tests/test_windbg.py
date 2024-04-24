@@ -11,9 +11,17 @@ X86_BINARY = tests.binaries.get("gosample.x86")
 data_addr = "0x400081"
 
 
-def test_windbg_dX_commands(start_binary):
-    """
-    Tests windbg compatibility commands that dump memory
+def test_windbg_dX_commands(start_bin    for cmd_prefix in ("eq", "ed", "ew", "eb"):
+        # With a non-existent symbol
+        cmd = cmd_prefix + " nonexistentsymbol"
+
+        # Expected error message variations for different Python versions
+        expected_in = (
+            "usage: XX [-h] address [data ...]\n"
+            "XX: error: argument address: Incorrect address (or GDB expression): nonexistentsymbol\n"
+        ).replace("XX", cmd_prefix)
+
+        assert gdb.execute(cmd, to_string=True) == expected_insts windbg compatibility commands that dump memory
     like dq, dw, db, ds etc.
     """
     start_binary(MEMORY_BINARY)

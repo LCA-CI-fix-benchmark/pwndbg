@@ -1,6 +1,43 @@
-#include <stdio.h>
-#include <stdlib.h>
+##include <stdlib.h>
 #include <string.h>
+#include <pthread.h>
+
+void break_here() {}
+
+int main() {
+    void* allocs[6] = {0};
+
+    allocs[0] = malloc(10);
+    allocs[1] = malloc(10);
+
+    break_here();
+
+    allocs[2] = malloc(40);
+
+    break_here();
+
+    free(allocs[1]);
+
+    break_here();
+
+    allocs[3] = malloc(0x1000);
+    allocs[4] = malloc(0x2000);
+    free(allocs[3]);
+
+    break_here();
+
+    // mock overflow changing the chunk size
+    memset(allocs[0] - sizeof(void*), 'A', 8);
+
+    break_here();
+
+    // Initialize pthread attributes
+    pthread_attr_t attr;
+    pthread_attr_init(&attr);
+
+    // Create a new thread using pthread_create
+    pthread_create(NULL, &attr, NULL, NULL);
+}clude <string.h>
 
 #include <pthread.h>
 

@@ -1,7 +1,48 @@
-#!/usr/bin/env bash
-
-#set -o errexit
+##set -o errexit
 set -o pipefail
+
+ROOT_DIR="$(readlink -f ../../)"
+GDB_INIT_PATH="$ROOT_DIR/gdbinit.py"
+COVERAGERC_PATH="$ROOT_DIR/pyproject.toml"
+
+CWD=$(dirname -- "$0")
+IMAGE_DIR="${CWD}/images"
+VMLINUX_LIST=($(basename -a "${IMAGE_DIR}"/vmlinux*))
+
+if [[ -e /proc/sys/kernel/yama/ptrace_scope ]]; then
+    ptrace_scope=$(cat /proc/sys/kernel/yama/ptrace_scope)
+    if [[ $ptrace_scope -ne 0 && $(id -u) -ne 0 ]]; then
+        cat << EOF
+WARNING: You are not running as root and ptrace_scope is not set to zero. If you
+run into issues when using pwndbg or gdb-pt-dump, rerun this script as root, or
+alternatively run the following command:
+
+    echo 0 | sudo tee /proc/sys/kernel/yama/ptrace_scope
+
+EOF
+    fi
+fi
+
+help_and_exit() {
+    echo "Usage: ./tests.sh [-p|--pdb] [-c|--cov] [--gdb-port=<port>] [-Q|--preserve-qemu-image] [<test-name-filter>]"
+    echo "  -p,  --pdb                  enable pdb (Python debugger) post mortem debugger on failed tests"
+    echo "  -c,  --cov                  enable codecov"
+    echo "  -v,  --verbose              display all test output instead of just failing test output"
+    echo "  --gdb-port=<port>           specify debug port for gdb/QEMU (Default: 1234)"
+    echo "  --collect-only              only show the output of test collection, don't run any tests"
+    echo "  -Q,  --preserve-qemu-image  don't kill QEMU image after failed tests"
+    echo "  <test-name-filter>          run only tests that match the regex"
+    exit 1
+}
+
+handle_sigint() {
+    echo "Exiting..." >&2
+    if [[ -n $QEMU_PID ]]; then
+        echo "Killing QEMU process $QEMU_PID"... >&2
+        pkill -P $QEMU_PID
+    fi
+    exit 1
+} pipefail
 
 ROOT_DIR="$(readlink -f ../../)"
 GDB_INIT_PATH="$ROOT_DIR/gdbinit.py"

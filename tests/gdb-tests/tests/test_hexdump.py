@@ -1,7 +1,19 @@
 from __future__ import annotations
 
-import gdb
-from pwnlib.util.cyclic import cyclic
+imp    stack_addr = pwndbg.gdblib.regs.rsp - 0x100
+
+    expected = [
+        f"""+0000 0x{stack_addr:x}  6161616261616161 6161616461616163 │aaaabaaa│caaadaaa│
++0010 0x{stack_addr+0x10:x}  6161616661616165 6161616861616167 │eaaafaaa│gaaahaaa│
++0020 0x{stack_addr+0x20:x}  6161616a61616169 6161616c6161616b │iaaajaaa│kaaalaaa│
++0030 0x{stack_addr+0x30:x}  6161616e6161616d 616161706161616f │maaanaaa│oaaapaaa│\n""",
+        f"""+0000 0x{stack_addr:x}            616161                  │aaa     │        │\n""",
+    ]
+    run_tests(stack_addr, True, expected)
+
+    expected = [
+        f"""+0000 0x{stack_addr:x}  6161616162616161 6361616164616161 │aaaabaaa│caaadaaa│
++0010 0x{stack_addr+0x10:x}  6561616166616161 6761616168616161 │eaaafaaa│gaaahaaa│lib.util.cyclic import cyclic
 
 import pwndbg.gdblib.config
 import pwndbg.gdblib.memory

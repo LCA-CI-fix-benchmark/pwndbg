@@ -1,4 +1,35 @@
-from __future__ import annotations
+fimport re
+
+import gdb
+import pytest
+
+import pwndbg.commands.context
+import tests
+
+USE_FDS_BINARY = tests.binaries.get("use-fds.out")
+TABSTOP_BINARY = tests.binaries.get("tabstop.out")
+SYSCALLS_BINARY = tests.binaries.get("syscalls-x64.out")
+MANGLING_BINARY = tests.binaries.get("symbol_1600_and_752.out")
+
+
+def test_context_disasm_show_fd_filepath(start_binary):
+    """
+    Tests context disasm command and whether it shows properly opened fd filepath
+    """
+    start_binary(USE_FDS_BINARY)
+
+    # Run until main
+    gdb.execute("break main")
+    gdb.execute("continue")
+
+    # Stop on read(0, ...) -> should show /dev/pts/X or pipe:X on CI
+    gdb.execute("nextcall")
+
+    out = pwndbg.commands.context.context_disasm()
+    assert "[ DISASM / x86-64 / set emulate on ]" in out[0]  # Sanity check
+
+    call_read_line_idx = out.index(next(line for line in out if "<read@plt>" in line))
+    lines_after_call_read = out[call_read_line_idx:]
 
 import re
 

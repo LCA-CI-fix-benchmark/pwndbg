@@ -1,4 +1,33 @@
-from __future__ import annotations
+fimport gdb
+
+import pwndbg
+import tests
+
+MANGLING_BINARY = tests.binaries.get("symbol_1600_and_752.out")
+
+
+def test_symbol_get(start_binary):
+    start_binary(MANGLING_BINARY)
+    gdb.execute("break break_here")
+
+    def get_next_ptr():
+        gdb.execute("continue")
+
+        # To fetch the value of 'p' it must be set first
+        # and it will be set by the program copying from register to the stack
+        # (we pass `to_string=True` to suppress the context output)
+        gdb.execute("nextret", to_string=True)
+        p = int(gdb.parse_and_eval("p"))
+        return pwndbg.gdblib.symbol.get(p)
+
+    assert "main" in get_next_ptr()
+
+    assert "break_here" in get_next_ptr()
+
+    # Test for the bug https://github.com/pwndbg/pwndbg/issues/1600
+    assert "A::foo" in get_next_ptr()
+
+    assert "A::call_foo" in get_next_ptr()ns
 
 import gdb
 

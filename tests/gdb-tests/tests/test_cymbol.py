@@ -1,4 +1,28 @@
-from __future__ import annotations
+fimport os
+
+import pwndbg.commands.cymbol
+import pwndbg.gdblib.dt
+import tests
+
+REFERENCE_BINARY = tests.binaries.get("reference-binary.out")
+
+
+# Might be useful for future expansion of the test case
+def create_symbol_file(symbol, source):
+    custom_structure_example_path = (
+        os.path.join(pwndbg.commands.cymbol.pwndbg_cachedir, symbol) + ".c"
+    )
+    with open(custom_structure_example_path, "w") as f:
+        f.write(source)
+    return custom_structure_example_path
+
+
+def check_symbol_existence(symbol_type):
+    assert pwndbg.commands.cymbol.exists(symbol_type)
+
+
+def test_cymbol(start_binary):
+    start_binary(REFERENCE_BINARY)ons
 
 import os
 

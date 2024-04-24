@@ -2,9 +2,55 @@ from __future__ import annotations
 
 import argparse
 import concurrent.futures
-import os
+import oimport time
 import re
-import subprocess
+
+    start = time.time()
+    test_resultsimport argparse
+
+    parser = argparse.ArgumentParser(description="Run tests.")
+    parser.add_argument(
+        "-p",
+        "--pdb",
+        action="store_true",
+        help="enable pdb (Python debugger) post mortem debugger on failed tests",
+    )
+    parser.add_argument("-c", "--cov", action="store_true", help="enable codecov")
+    parser.add_argument(
+        "-v",
+        "--verbose",
+        action="store_true",
+        help="display all test output instead of just failing test output",
+    )
+    parser.add_argument(
+        "-s", "--serial", action="store_true", help="run tests one at a time instead of in parallel"
+    )
+    parser.add_argument(
+        "--collect-only",
+        action="store_true",
+        help="only show the output of test collection, don't run any tests",
+    )
+    parser.add_argument(
+        "test_name_filter", nargs="?", help="run only tests that match the regex", default=".*"
+    )
+    return parser.parse_args()ess[str], str]] = []
+
+    def handle_parallel_test_result(test_result: Tuple[CompletedProcess[str], str]):
+        test_results.append(test_result)
+        (process, _) = test_result
+        content = process.stdout
+
+        # Extract the test name and result using regex
+        testname_match = re.search(r"^(tests/[^ ]+)", content, re.MULTILINE)
+        result_match = re.search(
+            r"(\x1b\[3.m(PASSED|FAILED|SKIPPED|XPASS|XFAIL)\x1b\[0m)", content, re.MULTILINE
+        )
+
+        testname = testname_match.group(0) if testname_match else ""
+        result = result_match.group(0) if result_match else ""
+
+        (_, testname) = testname.split("::")
+        print(f"{testname:<70} {result}")rt subprocess
 import time
 from subprocess import CompletedProcess
 from typing import Tuple

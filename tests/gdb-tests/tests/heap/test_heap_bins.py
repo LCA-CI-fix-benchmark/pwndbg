@@ -10,7 +10,25 @@ import pwndbg.heap
 import tests
 from pwndbg.heap.ptmalloc import BinType
 
-BINARY = tests.binaries.get("heap_bins.out")
+BINARY = tests.binaimport pytest
+
+        assert size_range.split(":")[0] == expected[bin_index]
+
+
+def test_largebins_size_range_32bit_big(start_binary):
+    """
+    Ensure the "largebins" command displays the correct largebin size ranges.
+    This test targets 32-bit architectures with MALLOC_ALIGNMENT == 16.
+    """
+    try:
+        start_binary(tests.binaries.get("initialized_heap_i386_big.out"))
+    except gdb.error:
+        pytest.skip("Test not supported on this platform.")
+
+    gdb.execute("break break_here")
+    gdb.execute("continue")
+
+    command_output = gdb.execute("largebins --verbose", to_string=True).splitlines()[1:]ns.out")
 
 
 def test_heap_bins(start_binary):

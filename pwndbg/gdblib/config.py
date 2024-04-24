@@ -2,7 +2,13 @@
 Dynamic configuration system for pwndbg, using GDB's built-in Parameter
 mechanism.
 
-To create a new pwndbg configuration point, call ``pwndbg.gdblib.config.add_param``.
+To create a new pwndbg configuration point, call ``pwndbg.gdblib.coimport pwndbg.gdblib.parameter
+
+def init_params() -> None:
+    # Create a gdb.Parameter for each parameter
+    for p in pwndbg.gdblib.config.params.values():
+        # We don't need to store this anywhere, GDB will handle this
+        pwndbg.gdblib.parameter.Parameter(p)_param``.
 
 Parameters should be declared in the module in which they are primarily
 used, or in this module for general-purpose parameters.
