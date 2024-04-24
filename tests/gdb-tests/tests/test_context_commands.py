@@ -1,6 +1,60 @@
-from __future__ import annotations
+fimport re
 
-import re
+import gdb
+import pytest
+
+from .. import commands as pwndbg_commands
+fimport gdb
+import pytest
+from .. import commands as pwndbg_commands
+from tests import binaries
+
+default_ctx_sects = "regs disasm code ghidra stack backtrace expressions threads"
+assert pwndbg.gdblib.config.context_sections.value == default_ctx_sects
+assert gdb.execute("context", to_string=True) != ""
+
+# Actual test check
+sections = "custom_sections"
+gdb.execute(f"set context-sections {sections}", to_string=True)
+assert pwndbg.gdblib.config.context_sections.value == sections
+assert gdb.execute("context", to_string=True) == ""
+
+# Bring back old values && sanity check
+gdb.execute(f"set context-sections {default_ctx_sects}")
+assert pwndbg.gdblib.config.context_sections.value == default_ctx_sects
+assert gdb.execute("context", to_string=True) != ""inaries
+
+USE_FDS_BINARY = binaries.get("use-fds.out")
+TABSTOP_BINARY = binaries.get("tabstop.out")
+SYSCALLS_BINARY = binaries.get("syscalls-x64.out")
+MANGLING_BINARY = binaries.get("symbol_1600_and_752.out")
+
+
+def test_context_disasm_show_fd_filepath(start_binary):
+    """
+    Tests context disasm command and whether it shows properly opened fd filepath
+    """
+    start_binary(USE_FDS_BINARY)
+
+    # Run until main
+    gdb.execute("break main")
+    gdb.execute("continue")
+
+    # Stop on read(0, ...) -> should show /dev/pts/X or pipe:X on CI
+    gdb.execute("nextcall")
+
+    out = pwndbg_commands.context_disasm()
+    assert "[ DISASM / x86-64 / set emulate on ]" in out[0]  # Sanity check
+
+    call_read_line_idx = out.index(next(line for line in out if "<read@plt>" in line))
+    lines_after_call_read = out[call_read_line_idx:]
+
+    line_call_read, line_fd, line_buf, line_nbytes, *_rest = lines_after_call_read
+
+    assert "call   read@plt" in line_call_read
+
+    # When running tests with GNU Parallel, sometimes the file name looks
+    # '/tmp/parZ4YC4.par', and occasionally '(deleted)' is present after thet re
 
 import gdb
 import pytest

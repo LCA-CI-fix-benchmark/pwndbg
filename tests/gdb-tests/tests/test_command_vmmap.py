@@ -3,10 +3,39 @@ from __future__ import annotations
 import tempfile
 
 import gdb
-import pytest
+import pytimport gdb
+import tempfile
 
-import pwndbg
-import tests
+vmmaps = gdb.execute("vmmap", to_string=True).splitlines()
+
+# Basic asserts
+assert len(vmmaps) == len(expected_maps) + 2  # +2 for header and legend
+assert vmmaps[0] == "LEGEND: STACK | HEAP | CODE | DATA | RWX | RODATA"
+
+# Split vmmaps
+vmmaps = [i.split() for i in vmmaps[2:]]
+
+# Assert that vmmap output matches expected one
+assert vmmaps == expected_maps
+
+# Now, generate core file, so we can then test coredump vmmap
+_, core = tempfile.mkstemp()
+gdb.execute(f"generate-core-file {core}")
+
+# The test should work fine even if we unload the original binary
+if unload_file:
+    gdb.execute("file")
+
+#### TEST COREDUMP VMMAP
+try:
+    # Now, let's load the generated core file
+    gdb.execute(f"core-file {core}")
+
+    old_len_vmmaps = len(vmmaps)
+
+finally:
+    # Clean up the temporary core file
+    os.remove(core)tests
 
 CRASH_SIMPLE_BINARY = tests.binaries.get("crash_simple.out.hardcoded")
 BINARY_ISSUE_1565 = tests.binaries.get("issue_1565.out")

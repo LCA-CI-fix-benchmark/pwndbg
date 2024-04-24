@@ -1,5 +1,5 @@
 - [Development Basics](#development-basics)
-  * [Environment setup](#environment-setup)
+  * [Environment setuYou can optionally set the contents of `.git/hooks/pre-push` to the following if you would like `lint.sh` to automatically be run before every push:onment-setup)
   * [Testing](#testing)
   * [Linting](#linting)
   * [Minimum Supported Versions](#minimum-supported-versions)

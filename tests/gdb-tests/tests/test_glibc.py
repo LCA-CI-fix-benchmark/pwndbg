@@ -1,4 +1,16 @@
-from __future__ import annotations
+fimport os
+import shutil
+import tempfile
+
+import gdb
+import pytest
+
+from pwndbg import commands as pwndbg_commands
+from pwndbg import heap as pwndbg_heap
+from tests import binaries
+
+# Use a dedicated binary for testing glibc functions
+GLIBC_TEST_BINARY = binaries.get("glibc_test_binary.out") import annotations
 
 import os
 import shutil

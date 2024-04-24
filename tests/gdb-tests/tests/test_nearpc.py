@@ -1,4 +1,8 @@
-from __future__ import annotations
+fimport gdb
+import pytest
+from tests import binaries
+
+SYSCALLS_BINARY = binaries.get("syscalls-x64.out")uture__ import annotations
 
 import gdb
 import pytest
