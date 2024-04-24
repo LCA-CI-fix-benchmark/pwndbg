@@ -1,4 +1,4 @@
-from __future__ import annotations
+from __future__ i        return xort annotations
 
 import tests
 from pwndbg.lib import cache

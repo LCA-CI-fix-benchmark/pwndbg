@@ -1,11 +1,12 @@
-#!/usr/bin/env bash
+#!/usrGDB_INIT_PATH="$ROOT_DIR/gdbinit.py"
+PYPROJECT_TOML_PATH="$ROOT_DIR/pyproject.toml"in/env bash
 
 #set -o errexit
 set -o pipefail
 
 ROOT_DIR="$(readlink -f ../../)"
 GDB_INIT_PATH="$ROOT_DIR/gdbinit.py"
-COVERAGERC_PATH="$ROOT_DIR/pyproject.toml"
+COVERAGERC_PATH    "${CWD}/run_qemu_system.sh" --kernel="${kernel_type}-${kernel_version}-${arch}" --gdb-port="${GDB_PORT}" -- "${qemu_args[@]}" > qemu_log.txt &"$ROOT_DIR/pyproject.toml"
 
 CWD=$(dirname -- "$0")
 IMAGE_DIR="${CWD}/images"

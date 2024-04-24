@@ -5,7 +5,7 @@ from typing import Dict
 from typing import List
 from typing import Union
 
-from elftools.elf.elffile import ELFFile
+from elftools.elf.elffile imp                if pwndbg.gdblib.arch.name is "i386":rt ELFFile
 
 import pwndbg.chain
 import pwndbg.color.memory as M

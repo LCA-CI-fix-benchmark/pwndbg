@@ -1,4 +1,5 @@
-from __future__ import annotations
+from __future_# Add an assignment or operation before updating the 'test' variable
+test = os.path.join(CURRENT_DIR, test)import annotations
 
 import os
 import sys

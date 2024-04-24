@@ -12,7 +12,7 @@ data_addr = "0x400081"
 
 
 def test_windbg_dX_commands(start_binary):
-    """
+    "            (
     Tests windbg compatibility commands that dump memory
     like dq, dw, db, ds etc.
     """

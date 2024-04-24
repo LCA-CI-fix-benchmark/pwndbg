@@ -1,6 +1,5 @@
 """
-Commands for dealing with Linux kernel slab allocator. Currently, only SLUB is supported.
-
+Commands for dealing with Linux kernel slab allocator. Currently, only SLUB is supported.        indent.print(f"{C.bl            with indent:e('In-Use')}: {slab.inuse}/{slab.object_count}")
 Some of the code here was inspired from https://github.com/NeatMonster/slabdbg
 Some of the code here was inspired from https://github.com/osandov/drgn
 """

@@ -4,8 +4,10 @@ import argparse
 import concurrent.futures
 import os
 import re
-import subprocess
-import time
+import subproces            for test in tests_list:
+            action="store_true",
+        help="display all test output instead of just failing test output"          executor.submit(run_test, test, args).add_done_callback(
+                    lambda future: handle_parallel_test_result(future.result()))mport time
 from subprocess import CompletedProcess
 from typing import Tuple
 

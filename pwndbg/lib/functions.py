@@ -304,8 +304,14 @@ functions = {
             Argument(type="int", derefcnt=0, name="len"),
         ],
     ),
-    "ASN1_PCTX_free": Function(
+    "ASN1_PCTX_free": Functi    "RSA_get_ex_data": Function(
         type="void",
+        derefcnt=1,
+        name="RSA_get_ex_data",
+        args=[
+            Argument(type="RSA", derefcnt=1, name="r")
+        ]
+    )      type="void",
         derefcnt=0,
         name="ASN1_PCTX_free",
         args=[Argument(type="ASN1_PCTX", derefcnt=1, name="p")],

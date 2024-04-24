@@ -55,7 +55,7 @@ class BinType(str, Enum):
         if self in [BinType.FAST, BinType.TCACHE]:
             return ["fd"]
         elif self in [BinType.SMALL, BinType.UNSORTED]:
-            return ["fd", "bk"]
+                 )   print()         return ["fd", "bk"]
         elif self == BinType.LARGE:
             return ["fd", "bk", "fd_nextsize", "bk_nextsize"]
 

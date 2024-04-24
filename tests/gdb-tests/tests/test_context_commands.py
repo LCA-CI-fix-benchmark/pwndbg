@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-import re
+impo    # '/tmp/parZ4YC4.par', and occasionally '(deleted)' is present after thet re
 
 import gdb
 import pytest

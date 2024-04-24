@@ -1,5 +1,5 @@
 """
-Routines to enumerate mapped memory, and attempt to associate
+Routines to enumerate mapped memory, and attempt to asso"""iate
 address ranges with various ELF files and permissions.
 
 The reason that we need robustness is that not every operating
