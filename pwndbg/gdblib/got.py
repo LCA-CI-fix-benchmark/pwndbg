@@ -7,7 +7,9 @@ Procedure Linkage Table.
 
 Currently, it does this by attatching watchpoints to the entries in the GOT and
 taking note of where the call came from, but it could be done much faster by
-injecting our own code into the program space to track this.
+injecting o# Check and modify the code snippet related to disabling certain features if necessary
+# Example:
+# Because of this behavior, we opt to disable them by default for the sake of...r own code into the program space to track this.
 """
 
 from __future__ import annotations

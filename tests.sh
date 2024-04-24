@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bincoverage run -m pytest tests/unit-testsbash
 
 # Run integration tests
 (cd tests/gdb-tests && python3 tests.py $@)

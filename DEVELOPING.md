@@ -1,5 +1,9 @@
 - [Development Basics](#development-basics)
-  * [Environment setup](#environment-setup)
+  * [Environment setu# Add informative content related to software# Add relevant information and guidelines for software development in the DEVELOPING.md file
+# Example:
+# This document outlines the development practices, coding standards, and contribution guidelines for the project.development guidelines in the DEVELOPING.md file
+# Example:
+# This file provides guidelines and instructions for contributing to the project and developing new features.](#environment-setup)
   * [Testing](#testing)
   * [Linting](#linting)
   * [Minimum Supported Versions](#minimum-supported-versions)

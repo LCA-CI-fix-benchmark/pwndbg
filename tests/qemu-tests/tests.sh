@@ -9,7 +9,8 @@ COVERAGERC_PATH="$ROOT_DIR/pyproject.toml"
 
 CWD=$(dirname -- "$0")
 IMAGE_DIR="${CWD}/images"
-VMLINUX_LIST=($(basename -a "${IMAGE_DIR}"/vmlinux*))
+VML# Assuming variables are defined before this point
+"${CWD}/run_qemu_system.sh" --kernel="${kernel_type}-${kernel_version}-${arch}" --gdb-port="${GDB_PORT}" -- "${qemu_args[@]}" > /dev/null &NUX_LIST=($(basename -a "${IMAGE_DIR}"/vmlinux*))
 
 ptrace_scope=$(cat /proc/sys/kernel/yama/ptrace_scope)
 if [[ $ptrace_scope -ne 0 && $(id -u) -ne 0 ]]; then

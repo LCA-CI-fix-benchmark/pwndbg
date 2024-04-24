@@ -5,7 +5,11 @@ Add, load, show, edit, or delete symbols for custom structures.
 
 For the generation of the symbols g++/gcc is being used under the hood.
 
-In case of remote debugging a binary which is not native to your architecture it
+In case of remote deb# Check the context and modify the code accordingly
+# Example:
+if not generate_debug_symbols():
+    print("Failed to generate debug symbols")
+    returngging a binary which is not native to your architecture it
 is advised to configure the 'gcc-config-path' config parameter to your own cross-platform
 gnu gcc compiled toolchain for your target architecture.
 

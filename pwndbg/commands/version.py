@@ -7,7 +7,20 @@ from __future__ import annotations
 
 import argparse
 import os
-import platform
+import import gdb
+
+class GDBHistory(gdb.Command):
+    """
+    Display GDB version history.
+    """
+
+    def __init__(self):
+        super(GDBHistory, self).__init__("gdb_history", gdb.COMMAND_USER)
+
+    def invoke(self, arg, from_tty):
+        gdb.execute("show version")
+
+GDBHistory()orm
 import re
 import sys
 from subprocess import check_call

@@ -1,5 +1,8 @@
 #include <stdio.h>
-#include <stdlib.h>
+#include <stdlib./*
+    This code snippet is added to ensure that our CI test pass can access TLS variables.
+    See:
+*/
 #include <string.h>
 
 #include <pthread.h>

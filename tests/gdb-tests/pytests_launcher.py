@@ -1,4 +1,7 @@
-from __future__ import annotations
+from __future_import os
+
+# Assuming CURRENT_DIR is defined or imported before this point
+test = os.path.join(CURRENT_DIR, test)import annotations
 
 import os
 import sys

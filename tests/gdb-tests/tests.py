@@ -3,10 +3,89 @@ from __future__ import annotations
 import argparse
 import concurrent.futures
 import os
-import re
-import subprocess
+import import re
+import argparse
+import os
 import time
-from subprocess import CompletedProcess
+import concurrent.futures
+
+def run_test(test, args):
+    # Code for running a test
+    pass
+
+def handle_parallel_test_result(result):
+    # Code to handle the result of a parallel test
+    pass
+
+def main():
+    start = time.time()
+
+    # Process content to extract testname and result
+    testname = re.search(r"^(tests/[^ ]+)", content, re.MULTILINE)[0]
+    result = re.search(
+        r"(\x1b\[3.m(PASSED|FAILED|SKIPPED|XPASS|XFAIL)\x1b\[0m)", content, re.MULTILINE
+    )[0]
+
+    (_, testname) = testname.split("::")
+    print(f"{testname:<70} {result}")
+
+    # Only show the output of failed tests unless the verbose flag was used
+    if args.verbose or "FAIL" in result:
+        print("")
+        print(content)
+
+    if args.serial:
+        test_results = [run_test(test, args) for test in tests_list]
+    else:
+        print("")
+        print("Running tests in parallel")
+        with concurrent.futures.ThreadPoolExecutor(max_workers=os.cpu_count()) as executor:
+            for test in tests_list:
+                executor.submit(run_test, test, args).add_done_callback(
+                    lambda future: handle_parallel_test_result(future.result())
+                )
+
+    end = time.time()
+    seconds = int(end - start)
+    print(f"Tests completed in {seconds} seconds")
+
+    failed_tests = [(process, _) for (process, _) in test_results if process.returncode != 0]
+    num_tests_failed = len(failed_tests)
+    num_tests_passed_or_skipped = len(tests_list) - num_tests_failed
+
+    print("")
+    print("*********************************")
+    print("********* TESTS SUMMARY *********")
+    print("*********************************")
+    print(f"Tests passed or skipped: {num_tests_passed_or_skipped}")
+    print(f"Tests failed: {num_tests_failed}")
+
+    if num_tests_failed != 0:
+        print("")
+        print(
+            f"Failing tests: {' '.join([failed_test_name for _, failed_test_name in failed_tests])}"
+        )
+        exit(1)
+
+def parse_args():
+    parser = argparse.ArgumentParser(description="Run tests.")
+    parser.add_argument(
+        "-p",
+        "--pdb",
+        action="store_true",
+        help="enable pdb (Python debugger) post mortem debugger on failed tests",
+    )
+    parser.add_argument("-c", "--cov", action="store_true", help="enable codecov")
+    parser.add_argument(
+        "-v",
+        "--verbose",
+        action="store_true",
+        help="display all test output instead of just failing test output",
+    )
+
+if __name__ == "__main__":
+    parse_args()
+    main()etedProcess
 from typing import Tuple
 
 ROOT_DIR = os.path.realpath("../../")
