@@ -18,7 +18,15 @@ test = os.path.join(CURRENT_DIR, test)
 args = [test, "-vvv", "-s", "--showlocals", "--color=yes"]
 
 if use_pdb:
-    args.append("--pdb")
+import sys
+
+try:
+    import pytest
+except ImportError:
+    print("Error: pytest module not found. Please install pytest.")
+    sys.exit(1)
+
+args.append("--pdb")
 
 print(f"Launching pytest with args: {args}")
 

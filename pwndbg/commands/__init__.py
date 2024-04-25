@@ -270,17 +270,21 @@ def OnlyWhenUserspace(function):
             )
 
     return _OnlyWhenUserspace
-
+import pwndbg.gdb as gdb
 
 def OnlyWithArch(arch_names: list[str]):
     """Decorates function to work only with the specified archictectures."""
     for arch in arch_names:
-        if arch not in pwndbg.gdblib.arch_mod.ARCHS:
+        if arch not in gdb.arch_mod.ARCHS:
             raise ValueError(
                 f"OnlyWithArch used with unsupported arch={arch}. Must be one of {', '.join(arch_names)}"
             )
 
     def decorator(function):
+        # Add decorator logic here
+        pass
+
+    return decorator
         @functools.wraps(function)
         def _OnlyWithArch(*a, **kw):
             if pwndbg.gdblib.arch.name in arch_names:

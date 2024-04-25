@@ -53,12 +53,12 @@ monitor        - use QEMU's `monitor info mem` to render vmmap
 none           - disable vmmap rendering; useful if rendering is particularly slow
 
 Note that the page-tables method will require the QEMU kernel process to be on the same machine and within the same PID namespace. Running QEMU kernel and GDB in different Docker containers will not work. Consider running both containers with --pid=host (meaning they will see and so be able to interact with all processes on the machine).
+import gdb
+
 """,
     param_class=gdb.PARAM_ENUM,
     enum_sequence=["page-tables", "monitor", "none"],
 )
-
-
 @pwndbg.lib.cache.cache_until("objfile", "start")
 def is_corefile() -> bool:
     """
