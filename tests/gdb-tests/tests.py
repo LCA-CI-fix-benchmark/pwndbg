@@ -114,7 +114,7 @@ def run_tests_and_print_stats(tests_list: list[str], args: argparse.Namespace):
         with concurrent.futures.ThreadPoolExecutor(max_workers=os.cpu_count()) as executor:
             for test in tests_list:
                 executor.submit(run_test, test, args).add_done_callback(
-                    lambda future: handle_parallel_test_result(future.result())
+                    lambda future: handle_parallel_test_result(future.result()))
                 )
 
     end = time.time()

@@ -37,11 +37,9 @@ functions = {
         name="ASN1_BIT_STRING_name_print",
         args=[
             Argument(type="BIO", derefcnt=1, name="out"),
-            Argument(type="ASN1_BIT_STRING", derefcnt=1, name="bs"),
-            Argument(type="BIT_STRING_BITNAME", derefcnt=1, name="tbl"),
+            Argument(type="ASN1_STRING", derefcnt=1, name="bs"),
             Argument(type="int", derefcnt=0, name="indent"),
         ],
-    ),
     "ASN1_BIT_STRING_new": Function(
         type="ASN1_BIT_STRING", derefcnt=1, name="ASN1_BIT_STRING_new", args=[]
     ),
