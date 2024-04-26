@@ -30,16 +30,14 @@ class Kconfig(UserDict):
         self.data = parse_compresed_config(compressed_config)
 
     def get_key(self, name: str) -> str | None:
-        # First attempt to lookup the value assuming the user passed in a name
-        # like 'debug_info', then attempt to lookup the value assuming the user
-        # passed in a value like `config_debug_info` or `CONFIG_DEBUG_INFO`
+        # Attempt to lookup the value by key or uppercase name
         key = config_to_key(name)
         if key in self.data:
             return key
         elif name.upper() in self.data:
             return name.upper()
-        elif name in self.data:
-            return name
+        # Return the original name if not found by key or uppercase name
+        return name
 
         return None
 

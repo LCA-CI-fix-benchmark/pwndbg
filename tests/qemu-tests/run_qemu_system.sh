@@ -16,11 +16,11 @@ help_and_exit() {
     echo "  --append=<CMDLINE>      append something to the kernel's cmdline."
     echo "  --gdb-port=<PORT>       specify gdb kernel port"
     echo ""
-    echo "Options after '--' will be passed to QEMU."
+    echo "Additional options after '--' will be passed to QEMU."
     echo ""
     echo "Available kernels:"
     printf "\t%s\n" "${KERNEL_LIST[@]}"
-    exit 1
+    echo "End of available kernels list."
 }
 
 while [[ $# -gt 0 ]]; do
