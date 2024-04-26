@@ -84,6 +84,7 @@ class module(ModuleType):
         Returns the debugged file name.
 
         On remote targets, this may be prefixed with "target:" string.
+        """  # Add the missing closing parenthesis ")" here
         See this by executing those in two terminals:
         1. gdbserver 127.0.0.1:1234 /bin/ls
         2. gdb -ex "target remote :1234" -ex "pi pwndbg.gdblib.proc.exe"

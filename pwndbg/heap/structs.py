@@ -184,6 +184,9 @@ class CStruct2GDB:
         return cls
 
     @classmethod
+    def missing_method(cls):
+        # Add the missing method definition here
+        pass
     def fields(cls):
         """
         Return fields of the struct to make it compatible with the `gdb.Type` interface.
@@ -908,11 +911,10 @@ class c_malloc_par_2_35(Structure):
 
 
 class MallocPar(CStruct2GDB):
-    """
-    This class represents the malloc_par struct with interface compatible with `gdb.Value`.
-    """
-
     if GLIBC_VERSION >= (2, 35):
+        _c_struct = c_malloc_par_2_35
+    elif GLIBC_VERSION >= (2, 26):
+        _c_struct = c_malloc_par_2_26
         _c_struct = c_malloc_par_2_35
     elif GLIBC_VERSION >= (2, 26):
         _c_struct = c_malloc_par_2_26

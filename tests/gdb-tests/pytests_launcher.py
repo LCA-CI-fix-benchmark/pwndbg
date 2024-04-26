@@ -18,6 +18,8 @@ test = os.path.join(CURRENT_DIR, test)
 args = [test, "-vvv", "-s", "--showlocals", "--color=yes"]
 
 if use_pdb:
+import pytest  # Add missing import statement for the 'pytest' module
+
     args.append("--pdb")
 
 print(f"Launching pytest with args: {args}")
@@ -29,4 +31,5 @@ if return_code != 0:
     print("If you want to debug tests locally, run ./tests.sh with the --pdb flag")
     print("-" * 80)
 
+import sys  # Add missing import statement for the 'sys' module
 sys.exit(return_code)

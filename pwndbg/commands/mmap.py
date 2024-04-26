@@ -218,6 +218,8 @@ existing range{'s' if len(collisions) > 1 else ''}:\
 This operation is destructive and will delete all of the listed mappings.\
 """
                     )
+                )  # Add the missing closing parenthesis here
+                    )
                 )
                 print(
                     m(

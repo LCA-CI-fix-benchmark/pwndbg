@@ -27,7 +27,6 @@ def binary_parse_breakpoints(binary_code):
                 bug_id = int(line.split(":")[0].split()[-1])
                 func_name = line.split(":")[1].split(";")[0].strip()
                 func_names[bug_id] = func_name
-
     # map bug id to breakpoint line numbers
     with open(binary_code) as f:
         breakpoints = {}

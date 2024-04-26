@@ -105,7 +105,7 @@ def print_slab(slab: Slab, indent, verbose: bool) -> None:
                     for freelist in slab.freelists:
                         next_free = freelist.find_next(addr)
                         if next_free:
-                            indent.print(f"- {_yx(addr)} (next: {next_free:#x})")
+                            indent.print(f"- {addr:#x} (next: {next_free:#x})")
                             break
                     else:
                         indent.print(f"- {_yx(addr)} (no next)")

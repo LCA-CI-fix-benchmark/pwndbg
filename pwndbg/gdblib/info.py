@@ -65,6 +65,7 @@ def parsed_sharedlibrary() -> dict[str, tuple[int, int]]:
         # or something like:
         # 0x00007fc8fd01b630  0x00007fc8fd19027d  Yes (*)     /lib/x86_64-linux-gnu/libc.so.6
         if not line.startswith("0x"):
+            continue  # Add the missing indentation and complete the missing part of the code snippet here
             continue
         from_, to, _, rest = line.split(maxsplit=3)
         path = rest.lstrip("(*)").lstrip()

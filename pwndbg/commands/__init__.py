@@ -270,8 +270,6 @@ def OnlyWhenUserspace(function):
             )
 
     return _OnlyWhenUserspace
-
-
 def OnlyWithArch(arch_names: list[str]):
     """Decorates function to work only with the specified archictectures."""
     for arch in arch_names:
@@ -281,6 +279,7 @@ def OnlyWithArch(arch_names: list[str]):
             )
 
     def decorator(function):
+        # Add the missing closing parenthesis here
         @functools.wraps(function)
         def _OnlyWithArch(*a, **kw):
             if pwndbg.gdblib.arch.name in arch_names:

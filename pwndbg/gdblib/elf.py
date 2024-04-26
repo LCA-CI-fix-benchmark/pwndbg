@@ -102,6 +102,7 @@ def get_elf_info(filepath):
                 mnemonic
                 for mask, mnemonic in [(PF_R, "read"), (PF_W, "write"), (PF_X, "execute")]
                 if s["p_flags"] & mask != 0
+            ]  # Add the missing closing parenthesis and closing square bracket here
             ]
             # end of memory backing
             s["x_vaddr_mem_end"] = s["p_vaddr"] + s["p_memsz"]

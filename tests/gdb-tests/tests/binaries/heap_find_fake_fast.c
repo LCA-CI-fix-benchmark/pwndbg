@@ -19,7 +19,6 @@
 #define HEAP_MAX_SIZE (2 * 4 * 1024 * 1024 * sizeof(long))
 
 void break_here(void) {}
-
 // Fake chunk size field for use with issue #1142 test.
 char* fake_chunk = NULL;
 

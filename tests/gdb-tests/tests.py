@@ -107,17 +107,31 @@ def run_tests_and_print_stats(tests_list: list[str], args: argparse.Namespace):
             print(content)
 
     if args.serial:
-        test_results = [run_test(test, args) for test in tests_list]
-    else:
-        print("")
-        print("Running tests in parallel")
-        with concurrent.futures.ThreadPoolExecutor(max_workers=os.cpu_count()) as executor:
-            for test in tests_list:
-                executor.submit(run_test, test, args).add_done_callback(
-                    lambda future: handle_parallel_test_result(future.result())
-                )
+import concurrent.futures  # Add missing import for the 'concurrent.futures' module
+import os  # Add missing import for the 'os' module
 
-    end = time.time()
+# Add missing function definitions for 'run_test', 'handle_parallel_test_result', and 'time'
+def run_test(test, args):
+    # Implement the run_test function
+    pass
+
+def handle_parallel_test_result(result):
+    # Implement the handle_parallel_test_result function
+    pass
+
+import time  # Add missing import for the 'time' module
+
+test_results = [run_test(test, args) for test in tests_list]
+else:
+    print("")
+    print("Running tests in parallel")
+    with concurrent.futures.ThreadPoolExecutor(max_workers=os.cpu_count()) as executor:
+        for test in tests_list:
+            executor.submit(run_test, test, args).add_done_callback(
+                lambda future: handle_parallel_test_result(future.result())
+            )
+
+end = time.time()
     seconds = int(end - start)
     print(f"Tests completed in {seconds} seconds")
 

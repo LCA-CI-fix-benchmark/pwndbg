@@ -315,7 +315,6 @@ def arenas() -> None:
             row.append(M.c.heap(mapping_data))
 
         table.append(row)
-
         for extra_heap in arena.heaps[1:]:
             row = [
                 "",
@@ -328,9 +327,9 @@ def arenas() -> None:
 
             table.append(row)
 
+    import tabulate  # Add the necessary import statement for the 'tabulate' module
+
     print(tabulate(table, headers, stralign="right"))
-
-
 parser = argparse.ArgumentParser(
     formatter_class=argparse.RawTextHelpFormatter,
     description="""Print a thread's tcache contents.
