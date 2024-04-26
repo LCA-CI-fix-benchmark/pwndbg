@@ -114,7 +114,7 @@ def run_tests_and_print_stats(tests_list: list[str], args: argparse.Namespace):
         with concurrent.futures.ThreadPoolExecutor(max_workers=os.cpu_count()) as executor:
             for test in tests_list:
                 executor.submit(run_test, test, args).add_done_callback(
-                    lambda future: handle_parallel_test_result(future.result())
+                    lambda future: handle_parallel_test_result(future.result()))
                 )
 
     end = time.time()
@@ -153,16 +153,16 @@ def parse_args():
         "-v",
         "--verbose",
         action="store_true",
-        help="display all test output instead of just failing test output",
-    )
-    parser.add_argument(
-        "-s", "--serial", action="store_true", help="run tests one at a time instead of in parallel"
-    )
-    parser.add_argument(
-        "--collect-only",
-        action="store_true",
-        help="only show the output of test collection, don't run any tests",
-    )
+    help="display all test output instead of just failing test output",
+)
+parser.add_argument(
+    "-s", "--serial", action="store_true", help="run tests one at a time instead of in parallel"
+)
+parser.add_argument(
+    "--collect-only",
+    action="store_true",
+    help="only show the output of test collection, don't run any tests",
+)
     parser.add_argument(
         "test_name_filter", nargs="?", help="run only tests that match the regex", default=".*"
     )

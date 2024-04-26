@@ -98,9 +98,10 @@ def display_config(filter_pattern: str, scope: str, has_file_command: bool = Tru
 
 
 @pwndbg.commands.ArgparsedCommand(parser, category=CommandCategory.PWNDBG)
+import argparse
+
 def config(filter_pattern) -> None:
     display_config(filter_pattern, "config")
-
 
 configfile_parser = argparse.ArgumentParser(
     description="Generates a configuration file for the current pwndbg options."

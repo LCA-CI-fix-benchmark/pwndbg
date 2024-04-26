@@ -101,7 +101,7 @@ def enhance(value: int, code: bool = True, safe_linking: bool = False) -> str:
         szval = E.string(repr(szval))
 
     # Fix for case when we can't read the end address anyway (#946)
-    if value + pwndbg.gdblib.arch.ptrsize > page.end:
+    if value + pwndbg.gdblib.arch.ptrsize >= page.end:
         return E.integer(int_str(value))
 
     intval = int(pwndbg.gdblib.memory.poi(pwndbg.gdblib.typeinfo.pvoid, value))
