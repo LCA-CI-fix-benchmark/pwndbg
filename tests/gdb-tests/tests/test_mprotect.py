@@ -1,11 +1,5 @@
 from __future__ import annotations
-
-import gdb
-
-import pwndbg
-import tests
-
-SMALL_BINARY = tests.binaries.get("crash_simple.out.hardcoded")
+No specific changes are needed in the provided code snippet as it imports necessary modules and defines a constant for a small binary file for testing mprotect functionality.
 
 
 def test_mprotect_executes_properly(start_binary):

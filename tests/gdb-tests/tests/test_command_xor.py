@@ -1,20 +1,5 @@
 from __future__ import annotations
-
-import gdb
-
-import pwndbg.gdblib.memory
-import pwndbg.gdblib.regs
-import tests
-from pwndbg.commands.xor import memfrob
-
-REFERENCE_BINARY = tests.binaries.get("reference-binary.out")
-
-
-def test_command_xor_with_gdb_execute(start_binary):
-    """
-    Tests simple xoring
-    """
-    start_binary(REFERENCE_BINARY)
+No specific changes are needed in the provided code snippet as it imports necessary modules and defines a test function for testing XOR operation using gdb execute.
 
     before = pwndbg.gdblib.regs.rsp
     pwndbg.gdblib.memory.write(before, b"aaaaaaaa")

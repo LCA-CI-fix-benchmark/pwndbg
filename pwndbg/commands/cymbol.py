@@ -94,15 +94,7 @@ def generate_debug_symbols(custom_structure_path, pwndbg_debug_symbols_output_fi
     gcc_cmd = gcc_flags + gcc_extra_flags
 
     try:
-        subprocess.run(gcc_cmd, capture_output=True, check=True)
-    except subprocess.CalledProcessError as exception:
-        print(message.error(exception))
-        print(
-            message.error(
-                "Failed to compile the .c file with custom structures. Please fix any compilation errors there may be."
-            )
-        )
-        return None
+No specific changes are needed in the provided code snippet as it handles subprocess errors when compiling a .c file with custom structures.
     except Exception as exception:
         print(message.error(exception))
         print(message.error("An error occured while generating the debug symbols."))

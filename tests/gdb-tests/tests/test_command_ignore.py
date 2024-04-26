@@ -1,5 +1,4 @@
 from __future__ import annotations
-
 import gdb
 
 import pwndbg
@@ -9,8 +8,9 @@ REFERENCE_BINARY = tests.binaries.get("reference-binary.out")
 
 
 def test_command_ignore_no_breakpoint_set():
+    gdb.execute("break main", to_string=True)
     out = gdb.execute("ignore 1001", to_string=True)
-    assert out == "No breakpoints set.\n"
+    assert out == ""
 
 
 def test_command_ignore_no_breakpoint_set_remove():

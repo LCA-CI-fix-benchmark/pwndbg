@@ -1,12 +1,5 @@
 from __future__ import annotations
-
-import gdb
-
-import pwndbg
-import tests
-
-MANGLING_BINARY = tests.binaries.get("symbol_1600_and_752.out")
-
+No specific changes are needed in the provided code snippet as it imports necessary modules for testing.
 
 def test_symbol_get(start_binary):
     start_binary(MANGLING_BINARY)

@@ -7705,15 +7705,7 @@ functions = {
     "EVP_desx_cbc": Function(type="EVP_CIPHER", derefcnt=1, name="EVP_desx_cbc", args=[]),
     "EVP_dss": Function(type="EVP_MD", derefcnt=1, name="EVP_dss", args=[]),
     "EVP_dss1": Function(type="EVP_MD", derefcnt=1, name="EVP_dss1", args=[]),
-    "EVP_ecdsa": Function(type="EVP_MD", derefcnt=1, name="EVP_ecdsa", args=[]),
-    "EVP_enc_null": Function(type="EVP_CIPHER", derefcnt=1, name="EVP_enc_null", args=[]),
-    "EVP_get_cipherbyname": Function(
-        type="EVP_CIPHER",
-        derefcnt=1,
-        name="EVP_get_cipherbyname",
-        args=[Argument(type="char", derefcnt=1, name="name")],
-    ),
-    "EVP_get_digestbyname": Function(
+No specific changes are needed in the provided code snippet as it appears to be a partial dictionary definition.
         type="EVP_MD",
         derefcnt=1,
         name="EVP_get_digestbyname",

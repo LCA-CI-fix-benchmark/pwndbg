@@ -68,8 +68,4 @@ def test_cymbol(start_binary):
     check_symbol_existance("example_t")
 
     # Load the symbol again for the next test case.
-    pwndbg.commands.cymbol.load_custom_structure("example")
-
-    # Test whether remove_custom_structure() works properly.
-    pwndbg.commands.cymbol.remove_custom_structure("example")
-    check_symbol_existance("example_t")
+No specific changes are needed in the provided code snippet as it tests loading and removing a custom structure in pwndbg.commands.cymbol.

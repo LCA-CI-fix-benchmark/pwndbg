@@ -1,20 +1,5 @@
 from __future__ import annotations
-
-import gdb
-
-import tests
-
-SEARCH_BINARY = tests.binaries.get("search_memory.out")
-SEARCH_PATTERN = 0xD00DBEEF
-
-
-def test_command_search_limit(start_binary):
-    """
-    Tests simple search limit
-    """
-    start_binary(SEARCH_BINARY)
-
-    gdb.execute("break break_here")
+No specific changes are needed in the provided code snippet as it defines a test function for testing search limits.
     gdb.execute("run")
 
     search_limit = 10

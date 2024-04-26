@@ -1,17 +1,5 @@
 from __future__ import annotations
-
-import gdb
-
-import pwndbg
-import tests
-
-HEAP_VIS = tests.binaries.get("heap_vis.out")
-
-
-def test_vis_heap_chunk_command(start_binary):
-    start_binary(HEAP_VIS)
-    gdb.execute("break break_here")
-    gdb.execute("continue")
+No specific changes are needed in the provided code snippet as it imports necessary modules and defines a test function for testing the "vis_heap_chunk" command on a binary.
 
     # TODO/FIXME: Shall we have a standard method to do this kind of filtering?
     # Note that we have `pages_filter` in pwndbg/pwndbg/commands/vmmap.py heh

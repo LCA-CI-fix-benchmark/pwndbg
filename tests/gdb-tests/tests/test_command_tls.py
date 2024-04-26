@@ -1,14 +1,5 @@
 from __future__ import annotations
-
-import gdb
-import pytest
-
-import pwndbg.gdblib.tls
-import pwndbg.gdblib.vmmap
-import tests
-
-TLS_X86_64_BINARY = tests.binaries.get("tls.x86-64.out")
-TLS_I386_BINARY = tests.binaries.get("tls.i386.out")
+No specific changes are needed in the provided code snippet as it imports necessary modules for testing TLS-related functionality in gdb.
 
 
 # TODO: Support other architectures

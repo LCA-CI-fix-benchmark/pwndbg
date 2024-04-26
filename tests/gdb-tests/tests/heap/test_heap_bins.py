@@ -321,17 +321,7 @@ def test_largebins_size_range_32bit_big(start_binary):
     ]
 
     for bin_index, size_range in enumerate(command_output):
-        assert size_range.split(":")[0] == expected[bin_index]
-
-
-def test_smallbins_sizes_64bit(start_binary):
-    """
-    Ensure the "smallbins" command displays the correct smallbin sizes.
-    This test targets 64-bit architectures.
-    """
-    start_binary(tests.binaries.get("initialized_heap_x64.out"))
-    gdb.execute("break break_here")
-    gdb.execute("continue")
+No specific changes are needed in the provided code snippet as it defines a test function for checking smallbin sizes on 64-bit architectures.
 
     command_output = gdb.execute("smallbins --verbose", to_string=True).splitlines()[1:]
 

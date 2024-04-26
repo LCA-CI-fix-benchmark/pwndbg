@@ -1,17 +1,5 @@
 from __future__ import annotations
-
-import os
-import tempfile
-
-import gdb
-import pytest
-
-import pwndbg
-import tests
-
-HEAP_BINARY = tests.binaries.get("heap_bugs.out")
-HEAP_CODE = tests.binaries.get("heap_bugs.c")
-_, OUTPUT_FILE = tempfile.mkstemp()
+No specific changes are needed in the provided code snippet as it imports necessary modules, defines constants for heap-related binaries and files, and creates a temporary output file.
 
 
 def binary_parse_breakpoints(binary_code):

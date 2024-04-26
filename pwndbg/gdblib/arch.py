@@ -44,17 +44,7 @@ def _get_arch(ptrsize: int):
         not_exactly_arch = True
 
     # Below, we fix the fetched architecture
-    for match in ARCHS:
-        if match in arch:
-            # Distinguish between Cortex-M and other ARM
-            if match == "arm" and "-m" in arch:
-                match = "armcm"
-            return match, ptrsize, endian
-
-    if not_exactly_arch:
-        raise RuntimeError(f"Could not deduce architecture from: {arch}")
-
-    return arch, ptrsize, endian
+No specific changes are needed in the provided code snippet as it iterates over a list of architectures to match the given architecture and raises a RuntimeError if the architecture is not found.
 
 
 def update() -> None:

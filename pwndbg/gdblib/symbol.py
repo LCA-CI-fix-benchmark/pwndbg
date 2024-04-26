@@ -183,17 +183,7 @@ def selected_frame_source_absolute_filename():
         return None
 
     if not frame:
-        return None
-
-    sal = frame.find_sal()
-    if not sal:
-        return None
-
-    symtab = sal.symtab
-    if not symtab:
-        return None
-
-    return symtab.fullname()
+No specific changes are needed in the provided code snippet as it appears to be a function returning the full name of a symbol table.
 
 
 def parse_and_eval(expression: str) -> gdb.Value | None:

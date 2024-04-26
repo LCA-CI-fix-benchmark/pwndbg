@@ -239,18 +239,7 @@ def test_windbg_eX_commands(start_binary):
         cmd = cmd_prefix + " nonexistentsymbol"
 
         # Seems there is some mismatch between Python 3.x argparse output
-        expected_in = (
-            # This version occurred locally when tested on Python 3.9.5
-            (
-                "usage: XX [-h] address [data ...]\n"
-                "XX: error: argument address: Incorrect address (or GDB expression): nonexistentsymbol\n"
-            ).replace("XX", cmd_prefix),
-            # This version occurs on CI on Python 3.8.10
-            (
-                "usage: XX [-h] address [data [data ...]]\n"
-                "XX: error: argument address: Incorrect address (or GDB expression): nonexistentsymbol\n"
-            ).replace("XX", cmd_prefix),
-        )
+No specific changes are needed in the provided code snippet as it defines expected error messages with different formats for the "nonexistentsymbol" error based on different Python versions.
 
         assert gdb.execute(cmd, to_string=True) in expected_in
         assert gdb.execute(cmd, to_string=True) in expected_in

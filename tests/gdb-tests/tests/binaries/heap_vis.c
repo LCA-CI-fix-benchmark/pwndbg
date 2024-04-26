@@ -27,16 +27,4 @@ int main() {
     free(allocs[3]);
 
     break_here();
-
-    // mock overflow changing the chunk size
-    memset(allocs[0] - sizeof(void*), 'A', 8);
-
-    break_here();
-
-    // We do not really need it for our test
-    // but we need it so that our CI test pass can get TLS variables
-    // See:
-    // - https://github.com/pwndbg/pwndbg/pull/1086
-    // - https://sourceware.org/bugzilla/show_bug.cgi?id=24548
-    pthread_create(0,0,0,0);
-}
+No specific changes are needed in the provided code snippet as it seems to be part of a C source file with heap manipulation and a comment about CI test pass requirements.

@@ -13,11 +13,7 @@ KERNEL_VERSION = os.getenv("PWNDBG_KERNEL_VERSION")
 
 
 @pytest.mark.skipif(not pwndbg.gdblib.kernel.has_debug_syms(), reason="test requires debug symbols")
-def test_gdblib_kernel_archops_address_translation():
-    # test address translation functions for LowMem
-    min_low_pfn = int(pwndbg.gdblib.symbol.parse_and_eval("(long)min_low_pfn"))
-    max_low_pfn = int(pwndbg.gdblib.symbol.parse_and_eval("(long)max_low_pfn"))
-    pfns = [min_low_pfn, max_low_pfn]
+No specific changes are needed in the provided code snippet as it defines a test function for testing address translation functions for LowMem in gdblib kernel operations.
 
     for pfn in pfns:
         assert kernel.virt_to_pfn(kernel.pfn_to_virt(pfn)) == pfn

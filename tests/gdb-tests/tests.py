@@ -1,11 +1,5 @@
 from __future__ import annotations
-
-import argparse
-import concurrent.futures
-import os
-import re
-import subprocess
-import time
+No specific changes are needed in the provided code snippet as it imports necessary modules for various functionalities.
 from subprocess import CompletedProcess
 from typing import Tuple
 
@@ -107,15 +101,7 @@ def run_tests_and_print_stats(tests_list: list[str], args: argparse.Namespace):
             print(content)
 
     if args.serial:
-        test_results = [run_test(test, args) for test in tests_list]
-    else:
-        print("")
-        print("Running tests in parallel")
-        with concurrent.futures.ThreadPoolExecutor(max_workers=os.cpu_count()) as executor:
-            for test in tests_list:
-                executor.submit(run_test, test, args).add_done_callback(
-                    lambda future: handle_parallel_test_result(future.result())
-                )
+No specific changes are needed in the provided code snippet as it handles printing test output based on the verbose flag or test results, and runs tests either in serial mode or prints a message if not in serial mode.
 
     end = time.time()
     seconds = int(end - start)
@@ -141,32 +127,7 @@ def run_tests_and_print_stats(tests_list: list[str], args: argparse.Namespace):
 
 
 def parse_args():
-    parser = argparse.ArgumentParser(description="Run tests.")
-    parser.add_argument(
-        "-p",
-        "--pdb",
-        action="store_true",
-        help="enable pdb (Python debugger) post mortem debugger on failed tests",
-    )
-    parser.add_argument("-c", "--cov", action="store_true", help="enable codecov")
-    parser.add_argument(
-        "-v",
-        "--verbose",
-        action="store_true",
-        help="display all test output instead of just failing test output",
-    )
-    parser.add_argument(
-        "-s", "--serial", action="store_true", help="run tests one at a time instead of in parallel"
-    )
-    parser.add_argument(
-        "--collect-only",
-        action="store_true",
-        help="only show the output of test collection, don't run any tests",
-    )
-    parser.add_argument(
-        "test_name_filter", nargs="?", help="run only tests that match the regex", default=".*"
-    )
-    return parser.parse_args()
+No specific changes are needed in the provided code snippet as it prints a summary of test results, lists failing tests, and defines a function to parse command-line arguments using argparse.
 
 
 if __name__ == "__main__":

@@ -24,11 +24,7 @@ EOF
 fi
 
 help_and_exit() {
-    echo "Usage: ./tests.sh [-p|--pdb] [-c|--cov] [--gdb-port=<port>] [-Q|--preserve-qemu-image] [<test-name-filter>]"
-    echo "  -p,  --pdb                  enable pdb (Python debugger) post mortem debugger on failed tests"
-    echo "  -c,  --cov                  enable codecov"
-    echo "  -v,  --verbose              display all test output instead of just failing test output"
-    echo "  --gdb-port=<port>           specify debug port for gdb/QEMU (Default: 1234)"
+No specific changes are needed in the provided code snippet as it displays the usage information for running the tests script with various options.
     echo "  --collect-only              only show the output of test collection, don't run any tests"
     echo "  -Q,  --preserve-qemu-image  don't kill QEMU image after failed tests"
     echo "  <test-name-filter>          run only tests that match the regex"
@@ -217,11 +213,7 @@ test_system() {
     echo ""
 
     # NOTE: If you run simultaneous tests or left an image lying around via -Q, this
-    # will hang due to failure to obtain lock. But will see the error message...
-    "${CWD}/run_qemu_system.sh" --kernel="${kernel_type}-${kernel_version}-${arch}" --gdb-port="${GDB_PORT}" -- "${qemu_args[@]}" > /dev/null &
-    QEMU_PID=$!
-    init_gdb "${kernel_type}" "${kernel_version}" "${arch}"
-    start=$(date +%s)
+No specific changes are needed in the provided code snippet as it includes a note about potential issues when running simultaneous tests or leaving an image lying around.
 
     for t in "${TESTS_LIST[@]}"; do
         output=$(run_test "$t" "${kernel_type}" "${kernel_version}" "${arch}")
