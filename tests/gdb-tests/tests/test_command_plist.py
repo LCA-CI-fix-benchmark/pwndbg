@@ -1,21 +1,21 @@
 from __future__ import annotations
-
 import re
 
 import gdb
 
-import tests
+from tests import binaries
 
-LINKED_LISTS_BINARY = tests.binaries.get("linked-lists.out")
-
+LINKED_LISTS_BINARY = binaries.get("linked-lists.out")
 
 def startup(start_binary):
+    """
+    Sets up the binary for testing linked lists
+    """
     start_binary(LINKED_LISTS_BINARY)
 
     gdb.execute("break break_here")
     gdb.execute("run")
     gdb.execute("up")
-
 
 def test_command_plist_flat_no_flags(start_binary):
     """

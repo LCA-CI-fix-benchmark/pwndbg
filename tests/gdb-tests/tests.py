@@ -107,6 +107,16 @@ def run_tests_and_print_stats(tests_list: list[str], args: argparse.Namespace):
             print(content)
 
     if args.serial:
+import argparse
+import os
+import concurrent.futures
+import time
+
+from custom_functions import ensureZigPath, makeBinaries, getTestsList, run_test, handle_parallel_test_result
+
+def run_tests_and_print_stats(tests_list, args):
+    start = time.time()
+    if args.serial:
         test_results = [run_test(test, args) for test in tests_list]
     else:
         print("")

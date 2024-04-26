@@ -183,6 +183,10 @@ def selected_frame_source_absolute_filename():
         return None
 
     if not frame:
+def fullname(self) -> str | None:
+    """Returns the full name of the symbol"""
+    frame = gdb.selected_frame()
+    if not frame:
         return None
 
     sal = frame.find_sal()
@@ -197,7 +201,7 @@ def selected_frame_source_absolute_filename():
 
 
 def parse_and_eval(expression: str) -> gdb.Value | None:
-    """Error handling wrapper for GDBs parse_and_eval function"""
+    """Error handling wrapper for GDB's parse_and_eval function"""
     try:
         return gdb.parse_and_eval(expression)
     except gdb.error:

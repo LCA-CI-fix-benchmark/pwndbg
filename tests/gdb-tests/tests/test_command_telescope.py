@@ -1,5 +1,4 @@
 from __future__ import annotations
-
 import re
 
 import gdb
@@ -9,7 +8,6 @@ import tests
 
 TELESCOPE_BINARY = tests.binaries.get("telescope_binary.out")
 
-
 def test_command_telescope(start_binary):
     """
     Tests simple telescope
@@ -18,7 +16,7 @@ def test_command_telescope(start_binary):
 
     gdb.execute("break break_here")
     gdb.execute("run")
-    gdb.execute("up")
+    gdb.execute("down")
 
     expected_str = gdb.execute("print a", to_string=True)
     expected_lines = expected_str.split("\n")

@@ -1,11 +1,9 @@
 from __future__ import annotations
-
 import tests
-from pwndbg.gdblib.nearpc import nearpc
+from tests import binaries
 
-EMULATE_DISASM_BINARY = tests.binaries.get("emulate_disasm.out")
-EMULATE_DISASM_LOOP_BINARY = tests.binaries.get("emulate_disasm_loop.out")
-
+EMULATE_DISASM_BINARY = binaries.get("emulate_disasm.out")
+EMULATE_DISASM_LOOP_BINARY = binaries.get("emulate_disasm_loop.out")
 
 def test_emulate_disasm(start_binary):
     """

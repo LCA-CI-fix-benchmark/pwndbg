@@ -220,6 +220,9 @@ test_system() {
     # will hang due to failure to obtain lock. But will see the error message...
     "${CWD}/run_qemu_system.sh" --kernel="${kernel_type}-${kernel_version}-${arch}" --gdb-port="${GDB_PORT}" -- "${qemu_args[@]}" > /dev/null &
     QEMU_PID=$!
+    if ! wait $QEMU_PID; then
+        echo "Failed to obtain lock in QEMU process."
+    fi
     init_gdb "${kernel_type}" "${kernel_version}" "${arch}"
     start=$(date +%s)
 

@@ -1,5 +1,4 @@
 from __future__ import annotations
-
 import os
 import shutil
 import tempfile
@@ -7,9 +6,8 @@ import tempfile
 import gdb
 import pytest
 
-import pwndbg.gdblib.info
-import pwndbg.glibc
-import tests
+from pwndbg import gdblib, glibc
+from tests import binaries
 
 # We used the same binary as heap tests since it will use libc, and many functions are mainly for debugging the heap
 HEAP_MALLOC_CHUNK = tests.binaries.get("heap_malloc_chunk.out")

@@ -1,19 +1,18 @@
 from __future__ import annotations
-
 import re
 from pathlib import Path
 
 import gdb
 import pytest
 
-import tests
+from tests import binaries
 
-NO_SECTS_BINARY = tests.binaries.get("gosample.x86")
+NO_SECTS_BINARY = binaries.get("gosample.x86")
 PIE_BINARY_WITH_PLT = "reference_bin_pie.out"
 NOPIE_BINARY_WITH_PLT = "reference_bin_nopie.out"
 
-
 def test_commands_plt_gotplt_got_when_no_sections(start_binary):
+    # Add test implementation here
     start_binary(NO_SECTS_BINARY)
 
     # elf.py commands

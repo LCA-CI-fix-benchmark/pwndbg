@@ -1,19 +1,15 @@
 from __future__ import annotations
-
 import gdb
 
-import pwndbg
-import tests
+from tests import binaries
 
-SMALL_BINARY = tests.binaries.get("crash_simple.out.hardcoded")
-
+SMALL_BINARY = binaries.get("crash_simple.out.hardcoded")
 
 def test_mprotect_executes_properly(start_binary):
     """
     Tests the mprotect command
     """
     start_binary(SMALL_BINARY)
-
     pc = pwndbg.gdblib.regs.pc
 
     # Check if we can use mprotect with address provided as value

@@ -38,5 +38,4 @@ int main() {
     // See:
     // - https://github.com/pwndbg/pwndbg/pull/1086
     // - https://sourceware.org/bugzilla/show_bug.cgi?id=24548
-    pthread_create(0,0,0,0);
 }
