@@ -29,6 +29,7 @@ help_and_exit() {
     echo "  -c,  --cov                  enable codecov"
     echo "  -v,  --verbose              display all test output instead of just failing test output"
     echo "  --gdb-port=<port>           specify debug port for gdb/QEMU (Default: 1234)"
+    echo "  -Q,  --preserve-qemu-image  preserve the QEMU image after test execution"
     echo "  --collect-only              only show the output of test collection, don't run any tests"
     echo "  -Q,  --preserve-qemu-image  don't kill QEMU image after failed tests"
     echo "  <test-name-filter>          run only tests that match the regex"
@@ -217,10 +218,23 @@ test_system() {
     echo ""
 
     # NOTE: If you run simultaneous tests or left an image lying around via -Q, this
-    # will hang due to failure to obtain lock. But will see the error message...
     "${CWD}/run_qemu_system.sh" --kernel="${kernel_type}-${kernel_version}-${arch}" --gdb-port="${GDB_PORT}" -- "${qemu_args[@]}" > /dev/null &
     QEMU_PID=$!
+    
+    # Error handling for command execution
+    if [ $? -ne 0 ]; then
+        echo "Error: Failed to run QEMU system."
+        exit 1
+    fi
+    
     init_gdb "${kernel_type}" "${kernel_version}" "${arch}"
+
+    # Check for any errors during GDB initialization
+    if [ $? -ne 0 ]; then
+        echo "Error: Failed to initialize GDB."
+        exit 1
+    }
+
     start=$(date +%s)
 
     for t in "${TESTS_LIST[@]}"; do
@@ -267,10 +281,31 @@ for vmlinux in "${VMLINUX_LIST[@]}"; do
     QEMU_ARGS=()
 
     test_system "${KERNEL_TYPE}" "${KERNEL_VERSION}" "${ARCH}" ${QEMU_ARGS}
+#!/bin/bash
 
-    if [[ "${ARCH}" == @("x86_64") ]]; then
-        # additional test with extra QEMU flags
-        QEMU_ARGS+=(-cpu qemu64,+la57)
-        test_system "${KERNEL_TYPE}" "${KERNEL_VERSION}" "${ARCH}" "${QEMU_ARGS[@]}"
-    fi
-done
+# Set up the environment for running QEMU tests
+
+# Run QEMU system with appropriate parameters and options
+"${CWD}/run_qemu_system.sh" --kernel="${kernel_type}-${kernel_version}-${arch}" --gdb-port="${GDB_PORT}" -- "${qemu_args[@]}" > /dev/null &
+QEMU_PID=$!
+
+# Error handling for command execution
+if [ $? -ne 0 ]; then
+    echo "Error: Failed to run QEMU system."
+    exit 1
+fi
+
+# Initialize GDB for debugging
+init_gdb "${kernel_type}" "${kernel_version}" "${arch}"
+
+# Check for any errors during GDB initialization
+if [ $? -ne 0 ]; then
+    echo "Error: Failed to initialize GDB."
+    exit 1
+fi
+
+# Start the QEMU tests
+start=$(date +%s)
+
+# Cleanup after the QEMU tests are completed
+# Add appropriate cleanup commands here

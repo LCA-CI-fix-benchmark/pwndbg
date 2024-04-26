@@ -1,5 +1,4 @@
 from __future__ import annotations
-
 import re
 
 import gdb
@@ -10,6 +9,9 @@ LINKED_LISTS_BINARY = tests.binaries.get("linked-lists.out")
 
 
 def startup(start_binary):
+    """
+    Initializes the test environment by starting the linked-lists binary and setting up breakpoints.
+    """
     start_binary(LINKED_LISTS_BINARY)
 
     gdb.execute("break break_here")

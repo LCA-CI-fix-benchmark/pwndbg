@@ -27,7 +27,6 @@ int main() {
     free(allocs[3]);
 
     break_here();
-
     // mock overflow changing the chunk size
     memset(allocs[0] - sizeof(void*), 'A', 8);
 
@@ -38,5 +37,5 @@ int main() {
     // See:
     // - https://github.com/pwndbg/pwndbg/pull/1086
     // - https://sourceware.org/bugzilla/show_bug.cgi?id=24548
-    pthread_create(0,0,0,0);
+    pthread_create(NULL, NULL, NULL, NULL);
 }

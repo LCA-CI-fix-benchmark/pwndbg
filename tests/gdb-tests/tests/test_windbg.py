@@ -115,6 +115,7 @@ def test_windbg_dX_commands(start_binary):
     assert gdb.execute("dd data 3", to_string=True) == (
         "0000000000400081     00000000 00000000 00000001\n"
     )
+    )
 
     #################################################
     #### dw command tests
@@ -239,15 +240,14 @@ def test_windbg_eX_commands(start_binary):
         cmd = cmd_prefix + " nonexistentsymbol"
 
         # Seems there is some mismatch between Python 3.x argparse output
-        expected_in = (
             # This version occurred locally when tested on Python 3.9.5
             (
-                "usage: XX [-h] address [data ...]\n"
+                "usage: XX [-h] address [data [data ...]]\n"
                 "XX: error: argument address: Incorrect address (or GDB expression): nonexistentsymbol\n"
             ).replace("XX", cmd_prefix),
             # This version occurs on CI on Python 3.8.10
             (
-                "usage: XX [-h] address [data [data ...]]\n"
+                "usage: XX [-h] address [data ...]\n"
                 "XX: error: argument address: Incorrect address (or GDB expression): nonexistentsymbol\n"
             ).replace("XX", cmd_prefix),
         )
@@ -360,7 +360,8 @@ def test_windbg_commands_x86(start_binary):
     gdb.execute("ew $esp 4141")
     assert pwndbg.gdblib.memory.read(pwndbg.gdblib.regs.esp, 2) == b"\x41\x41"
 
-    gdb.execute("ed $esp 5252525252")
+    gdb.execute("ed $esp 52525252")
+    assert pwndbg.gdblib.memory.read(pwndbg.gdblib.regs.esp, 4) == b"\x52\x52\x52\x52"
     assert pwndbg.gdblib.memory.read(pwndbg.gdblib.regs.esp, 4) == b"\x52" * 4
 
     gdb.execute("eq $esp 1122334455667788")

@@ -93,13 +93,13 @@ def run_tests_and_print_stats(tests_list: list[str], args: argparse.Namespace):
         content = process.stdout
 
         # Extract the test name and result using regex
-        testname = re.search(r"^(tests/[^ ]+)", content, re.MULTILINE)[0]
+        testname = re.search(r"^(tests/[^ ]+)", content, re.MULTILINE).group(0)
         result = re.search(
             r"(\x1b\[3.m(PASSED|FAILED|SKIPPED|XPASS|XFAIL)\x1b\[0m)", content, re.MULTILINE
-        )[0]
+        ).group(0)
 
-        (_, testname) = testname.split("::")
-        print(f"{testname:<70} {result}")
+        (_, testname) = testname.split("/")  # Split by "/" to extract the test name
+        print(f"{testname.ljust(70)} {result}")
 
         # Only show the output of failed tests unless the verbose flag was used
         if args.verbose or "FAIL" in result:
@@ -107,6 +107,10 @@ def run_tests_and_print_stats(tests_list: list[str], args: argparse.Namespace):
             print(content)
 
     if args.serial:
+import concurrent.futures
+
+if __name__ == "__main__":
+    if not parallel:
         test_results = [run_test(test, args) for test in tests_list]
     else:
         print("")
@@ -141,10 +145,13 @@ def run_tests_and_print_stats(tests_list: list[str], args: argparse.Namespace):
 
 
 def parse_args():
-    parser = argparse.ArgumentParser(description="Run tests.")
+import argparse
+
+def parse_args():
+    parser = argparse.ArgumentParser(description="Test Runner")
     parser.add_argument(
-        "-p",
-        "--pdb",
+        "-pdb",
+        "--enable_pdb",
         action="store_true",
         help="enable pdb (Python debugger) post mortem debugger on failed tests",
     )
@@ -167,6 +174,9 @@ def parse_args():
         "test_name_filter", nargs="?", help="run only tests that match the regex", default=".*"
     )
     return parser.parse_args()
+
+if __name__ == "__main__":
+    args = parse_args()
 
 
 if __name__ == "__main__":

@@ -40,10 +40,10 @@ def aslr(state=None) -> None:
     aslr, method = pwndbg.gdblib.vmmap.check_aslr()
 
     if aslr is True:
-        status = message.on("ON")
+        status = message.on("ASLR is ON")
     elif aslr is False:
-        status = message.off("OFF")
+        status = message.off("ASLR is OFF")
     else:
-        status = message.off("???")
+        status = message.off("ASLR status unknown")
 
     print(f"ASLR is {status} ({method})")

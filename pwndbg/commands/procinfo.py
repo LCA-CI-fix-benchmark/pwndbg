@@ -211,6 +211,8 @@ def procinfo() -> None:
         print(
             message.error(
                 "QEMU target detected: showing result for the qemu process"
+            )
+        )
                 " - so it will be a bit inaccurate (excessive for the parts"
                 " used directly by the qemu process)"
             )

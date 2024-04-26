@@ -156,7 +156,7 @@ def test_heap_bins(start_binary):
     assert result.bins[largebin_size].is_corrupted
 
     gdb.execute("bins")
-
+import gdb
 
 def test_largebins_size_range_64bit(start_binary):
     """

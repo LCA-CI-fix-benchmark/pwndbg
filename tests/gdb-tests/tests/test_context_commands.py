@@ -22,7 +22,7 @@ def test_context_disasm_show_fd_filepath(start_binary):
 
     # Run until main
     gdb.execute("break main")
-    gdb.execute("continue")
+    gdb.execute("run")
 
     # Stop on read(0, ...) -> should show /dev/pts/X or pipe:X on CI
     gdb.execute("nextcall")

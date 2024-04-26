@@ -20,12 +20,12 @@ Killing all other threads may be useful to use GDB checkpoints, e.g., to test gi
 """,
 )
 
-parser.add_argument("thread_ids", nargs="*", help="Thread IDs to kill.")
+parser.add_argument("thread_ids", nargs="*", help="List of thread IDs to be terminated.")
 parser.add_argument(
     "-a",
     "--all",
     action="store_true",
-    help="Kill all threads except the current one.",
+    help="Terminate all threads except the current one.",
 )
 
 

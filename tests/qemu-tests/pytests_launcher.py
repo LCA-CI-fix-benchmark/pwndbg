@@ -1,5 +1,4 @@
 from __future__ import annotations
-
 import os
 import sys
 
@@ -11,11 +10,13 @@ sys._pwndbg_unittest_run = True
 
 CURRENT_DIR = os.path.dirname(os.path.realpath(__file__))
 
-test = os.environ["PWNDBG_LAUNCH_TEST"]
+try:
+    test_file = os.path.join(CURRENT_DIR, os.environ["PWNDBG_LAUNCH_TEST"])
+except KeyError:
+    print("Error: PWNDBG_LAUNCH_TEST environment variable not set.")
+    sys.exit(1)
 
-test = os.path.join(CURRENT_DIR, test)
-
-args = [test, "-vvv", "-s", "--showlocals", "--color=yes"]
+args = [test_file, "-vvv", "-s", "--showlocals", "--color=yes"]
 
 if use_pdb:
     args.append("--pdb")
