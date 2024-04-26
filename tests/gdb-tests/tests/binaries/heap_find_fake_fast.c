@@ -19,15 +19,14 @@
 #define HEAP_MAX_SIZE (2 * 4 * 1024 * 1024 * sizeof(long))
 
 void break_here(void) {}
-
 // Fake chunk size field for use with issue #1142 test.
 char* fake_chunk = NULL;
 
 // This buffer will contain the fake chunk sizes
-unsigned long buf[64] __attribute__((aligned(0x10)));
+unsigned long buf[64] __attribute__((aligned(0x10)]);
 
 // This is the address we want the fake chunks to overlap with
-unsigned long target_address;
+unsigned long target_address = 0;
 
 /*
  * Put the value of `size` at `distance` bytes before the address of

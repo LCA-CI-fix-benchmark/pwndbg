@@ -65,6 +65,8 @@ def killthreads(thread_ids: list | None = None, all: bool = False) -> None:
                 pass
 
         # Switch back to the thread we were on before killing threads
+import gdb
+
         gdb.execute(f"thread {current_thread_id}", to_string=True)
         print(
             message.success(

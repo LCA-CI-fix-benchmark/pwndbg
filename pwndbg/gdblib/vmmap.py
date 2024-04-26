@@ -62,8 +62,6 @@ Note that the page-tables method will require the QEMU kernel process to be on t
     param_class=gdb.PARAM_ENUM,
     enum_sequence=["page-tables", "monitor", "none"],
 )
-
-
 @pwndbg.lib.cache.cache_until("objfile", "start")
 def is_corefile() -> bool:
     """
@@ -136,13 +134,13 @@ def get() -> Tuple[pwndbg.lib.memory.Page, ...]:
 
     # TODO/FIXME: Add tests for  QEMU-user targets when this is needed
     global inside_no_proc_maps_search
+    inside_no_proc_maps_search = False
+    
     if not pages and not inside_no_proc_maps_search:
         inside_no_proc_maps_search = True
         # If debuggee is launched from a symlink the debuggee memory maps will be
         # labeled with symlink path while in normal scenario the /proc/pid/maps
         # labels debuggee memory maps with real path (after symlinks).
-        # This is because the exe path in AUXV (and so `info auxv`) is before
-        # following links.
         pages.extend(info_auxv())
 
         if pages:

@@ -219,6 +219,8 @@ This operation is destructive and will delete all of the listed mappings.\
 """
                     )
                 )
+                    )
+                )
                 print(
                     m(
                         "Run this command again with `--force` if you still \

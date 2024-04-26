@@ -26,7 +26,7 @@ def setup_mem(max_size, offsets):
         buf[offset : offset + 8] = p64(value)
 
     return buf
-
+import pytest
 
 def test_too_small():
     max_size = 0x80
@@ -39,8 +39,6 @@ def test_too_small():
 
     with pytest.raises(StopIteration):
         next(find_fastbin_size(buf, max_size, 8))
-
-
 def test_normal():
     max_size = 0x20
     offsets = {

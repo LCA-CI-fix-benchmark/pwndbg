@@ -416,6 +416,8 @@ def context(subcontext=None) -> None:
                 res.append(pwndbg.ui.banner("", target=out, width=settings.get("width", None)))
 
     for target, lines in result.items():
+import sys
+
         with target as out:
             if result_settings[target].get("clearing", config_clear_screen) and lines:
                 clear_screen(out)
@@ -423,8 +425,6 @@ def context(subcontext=None) -> None:
             if out is sys.stdout:
                 out.write("\n")
             out.flush()
-
-
 pwndbg.gdblib.config.add_param(
     "show-compact-regs", False, "whether to show a compact register view with columns"
 )

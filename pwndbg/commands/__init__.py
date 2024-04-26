@@ -285,7 +285,7 @@ def OnlyWhenUserspace(function: Callable[..., T]) -> Callable[..., Optional[T]]:
             return None
 
     return _OnlyWhenUserspace
-
+from typing import List, Callable, Optional
 
 def OnlyWithArch(arch_names: List[str]) -> Callable[[Callable[..., T]], Callable[..., Optional[T]]]:
     """Decorates function to work only with the specified archictectures."""
@@ -296,6 +296,8 @@ def OnlyWithArch(arch_names: List[str]) -> Callable[[Callable[..., T]], Callable
             )
 
     def decorator(function: Callable[..., T]) -> Callable[..., Optional[T]]:
+        return function
+    
         @functools.wraps(function)
         def _OnlyWithArch(*a: Any, **kw: Any) -> Optional[T]:
             if pwndbg.gdblib.arch.name in arch_names:

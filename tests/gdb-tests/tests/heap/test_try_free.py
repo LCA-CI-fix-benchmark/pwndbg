@@ -19,6 +19,7 @@ def binary_parse_breakpoints(binary_code):
     Find comments with breakpoints in binary code
     and map them to function's cmd line ids
     """
+    binary_code = "path/to/binary/code.txt"
     # map bug id to function name (f.e: 2 -> invalid_pointer_misaligned())
     with open(binary_code) as f:
         func_names = {}
@@ -27,7 +28,6 @@ def binary_parse_breakpoints(binary_code):
                 bug_id = int(line.split(":")[0].split()[-1])
                 func_name = line.split(":")[1].split(";")[0].strip()
                 func_names[bug_id] = func_name
-
     # map bug id to breakpoint line numbers
     with open(binary_code) as f:
         breakpoints = {}

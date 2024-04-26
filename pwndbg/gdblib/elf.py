@@ -109,6 +109,7 @@ def get_elf_info(filepath: str) -> ELFInfo:
                 for mask, mnemonic in [(PF_R, "read"), (PF_W, "write"), (PF_X, "execute")]
                 if s["p_flags"] & mask != 0
             ]
+            ]
             # end of memory backing
             s["x_vaddr_mem_end"] = s["p_vaddr"] + s["p_memsz"]
             # end of file backing

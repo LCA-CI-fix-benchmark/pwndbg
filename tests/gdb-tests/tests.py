@@ -107,6 +107,10 @@ def run_tests_and_print_stats(tests_list: list[str], args: argparse.Namespace):
             print(content)
 
     if args.serial:
+import concurrent.futures
+import os
+import time
+
         test_results = [run_test(test, args) for test in tests_list]
     else:
         print("")
