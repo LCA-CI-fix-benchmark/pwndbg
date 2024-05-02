@@ -118,9 +118,9 @@ def test_command_vmmap_on_coredump_on_crash_simple_binary(start_binary, unload_f
         expected_maps.remove(binary_map)
 
     # Fix up expected maps
-    next(i for i in expected_maps if i[-1] == "[vdso]")[-1] = "load2"
+    next((i for i in expected_maps if i[-1] == "[vdso]"), None)[-1] = "load2"
 
-    vdso_map = next(i for i in expected_maps if i[-1] == "[vvar]")
+    vdso_map = next((i for i in expected_maps if i[-1] == "[vvar]"), None)
     expected_maps.remove(vdso_map)
 
     def assert_maps():
