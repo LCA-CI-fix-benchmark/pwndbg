@@ -200,5 +200,6 @@ def parse_and_eval(expression: str) -> gdb.Value | None:
     """Error handling wrapper for GDBs parse_and_eval function"""
     try:
         return gdb.parse_and_eval(expression)
-    except gdb.error:
+    except Exception:
+        return None
         return None

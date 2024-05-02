@@ -104,7 +104,8 @@ def run_tests_and_print_stats(tests_list: list[str], args: argparse.Namespace):
         # Only show the output of failed tests unless the verbose flag was used
         if args.verbose or "FAIL" in result:
             print("")
-            print(content)
+{
+    print(content)
 
     if args.serial:
         test_results = [run_test(test, args) for test in tests_list]
@@ -138,39 +139,7 @@ def run_tests_and_print_stats(tests_list: list[str], args: argparse.Namespace):
             f"Failing tests: {' '.join([failed_test_name for _, failed_test_name in failed_tests])}"
         )
         exit(1)
-
-
-def parse_args():
-    parser = argparse.ArgumentParser(description="Run tests.")
-    parser.add_argument(
-        "-p",
-        "--pdb",
-        action="store_true",
-        help="enable pdb (Python debugger) post mortem debugger on failed tests",
-    )
-    parser.add_argument("-c", "--cov", action="store_true", help="enable codecov")
-    parser.add_argument(
-        "-v",
-        "--verbose",
-        action="store_true",
-        help="display all test output instead of just failing test output",
-    )
-    parser.add_argument(
-        "-s", "--serial", action="store_true", help="run tests one at a time instead of in parallel"
-    )
-    parser.add_argument(
-        "--collect-only",
-        action="store_true",
-        help="only show the output of test collection, don't run any tests",
-    )
-    parser.add_argument(
-        "test_name_filter", nargs="?", help="run only tests that match the regex", default=".*"
-    )
-    return parser.parse_args()
-
-
-if __name__ == "__main__":
-    args = parse_args()
+}
     if args.cov:
         print("Will run codecov")
     if args.pdb:
