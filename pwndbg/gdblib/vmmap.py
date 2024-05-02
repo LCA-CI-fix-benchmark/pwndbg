@@ -602,6 +602,7 @@ def kernel_vmmap_via_monitor_info_mem() -> Tuple[pwndbg.lib.memory.Page, ...]:
         perm = line[rspace_idx + 1 :]
 
         flags = 0
+        # Add the missing continuation here
         if "r" in perm:
             flags |= 4
         if "w" in perm:
@@ -773,8 +774,6 @@ def find_boundaries(addr: int, name: str = "", min: int = 0) -> pwndbg.lib.memor
     start = max(start, min)
 
     return pwndbg.lib.memory.Page(start, end - start, 4, 0, name)
-
-
 def check_aslr() -> Tuple[bool | None, str]:
     """
     Detects the ASLR status. Returns True, False or None.

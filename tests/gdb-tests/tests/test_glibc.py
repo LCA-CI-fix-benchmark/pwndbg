@@ -36,17 +36,18 @@ def test_parsing_info_sharedlibrary_to_find_libc_filename(start_binary, have_deb
     test_libc_names = ["libc-2.36.so", "libc6_2.36-0ubuntu4_amd64.so", "libc.so"]
     with tempfile.TemporaryDirectory() as tmp_dir:
         for test_libc_name in test_libc_names:
+            # Add the necessary continuation of the loop iteration here
             test_libc_path = os.path.join(tmp_dir, test_libc_name)
             shutil.copy(libc_path, test_libc_path)
             gdb.execute(f"set environment LD_PRELOAD={test_libc_path}")
             start_binary(HEAP_MALLOC_CHUNK)
-            gdb.execute("break break_here")
             gdb.execute("continue")
             # Check if we can find the libc loaded by LD_PRELOAD
             if not have_debugging_information:
                 assert "(*)" in pwndbg.gdblib.info.sharedlibrary()
             assert pwndbg.glibc.get_libc_filename_from_info_sharedlibrary() == test_libc_path
 
+        # Unfortunately, if we used LD_PRELOAD to load libc, we might cannot find the libc's filename
         # Unfortunatly, if we used LD_PRELOAD to load libc, we might cannot find the libc's filename
         # In this case, the function should return None instead of crashing
         test_libc_path = os.path.join(tmp_dir, "a_weird_name_that_does_not_look_like_a_1ibc.so")
