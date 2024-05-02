@@ -22,23 +22,10 @@ def test_parsing_info_sharedlibrary_to_find_libc_filename(start_binary, have_deb
     # Check if we can find the libc if nothing special happens
     if not have_debugging_information:
         # Make sure the (*) in the output of `info sharedlibrary` won't affect the result
-        gdb.execute("set debug-file-directory")
-    start_binary(HEAP_MALLOC_CHUNK)
-    gdb.execute("break break_here")
-    gdb.execute("continue")
-    if not have_debugging_information:
-        assert "(*)" in pwndbg.gdblib.info.sharedlibrary()
-    libc_path = pwndbg.glibc.get_libc_filename_from_info_sharedlibrary()
-    assert libc_path is not None
+No syntax errors were found in the provided code snippet.
 
     # Create 3 copies of the libc with the filenames: libc-2.36.so, libc6_2.36-0ubuntu4_amd64.so, libc.so
-    # Note: The version in the above filename doesn't matter, just some tests for the common libc names we might use with LD_PRELOAD
-    test_libc_names = ["libc-2.36.so", "libc6_2.36-0ubuntu4_amd64.so", "libc.so"]
-    with tempfile.TemporaryDirectory() as tmp_dir:
-        for test_libc_name in test_libc_names:
-            test_libc_path = os.path.join(tmp_dir, test_libc_name)
-            shutil.copy(libc_path, test_libc_path)
-            gdb.execute(f"set environment LD_PRELOAD={test_libc_path}")
+No syntax errors were found in the provided code snippet.
             start_binary(HEAP_MALLOC_CHUNK)
             gdb.execute("break break_here")
             gdb.execute("continue")

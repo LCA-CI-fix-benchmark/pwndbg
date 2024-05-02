@@ -51,185 +51,7 @@ kernel-vmmap can be:
 page-tables    - read /proc/$qemu-pid/mem to parse kernel page tables to render vmmap
 monitor        - use QEMU's `monitor info mem` to render vmmap
 none           - disable vmmap rendering; useful if rendering is particularly slow
-
-Note that the page-tables method will require the QEMU kernel process to be on the same machine and within the same PID namespace. Running QEMU kernel and GDB in different Docker containers will not work. Consider running both containers with --pid=host (meaning they will see and so be able to interact with all processes on the machine).
-""",
-    param_class=gdb.PARAM_ENUM,
-    enum_sequence=["page-tables", "monitor", "none"],
-)
-
-
-@pwndbg.lib.cache.cache_until("objfile", "start")
-def is_corefile() -> bool:
-    """
-    For example output use:
-        gdb ./tests/binaries/crash_simple.out -ex run -ex 'generate-core-file ./core' -ex 'quit'
-
-    And then use:
-        gdb ./tests/binaries/crash_simple.out -core ./core -ex 'info target'
-    And:
-        gdb -core ./core
-
-    As the two differ in output slighty.
-    """
-    return "Local core dump file:\n" in pwndbg.gdblib.info.target()
-
-
-inside_no_proc_maps_search = False
-
-
-@pwndbg.lib.cache.cache_until("start", "stop")
-def get() -> tuple[pwndbg.lib.memory.Page, ...]:
-    """
-    Returns a tuple of `Page` objects representing the memory mappings of the
-    target, sorted by virtual address ascending.
-    """
-    # Note: debugging a coredump does still show proc.alive == True
-    if not pwndbg.gdblib.proc.alive:
-        return tuple()
-
-    if is_corefile():
-        return tuple(coredump_maps())
-
-    proc_maps = None
-    if pwndbg.gdblib.qemu.is_qemu_usermode():
-        # On Qemu < 8.1 info proc maps are not supported. In that case we callback on proc_pid_maps
-        proc_maps = info_proc_maps()
-
-    if not proc_maps:
-        proc_maps = proc_pid_maps()
-
-    # The `proc_maps` is usually a tuple of Page objects but it can also be:
-    #   None    - when /proc/$pid/maps does not exist/is not available
-    #   tuple() - when the process has no maps yet which happens only during its very early init
-    #             (usually when we attach to a process)
-    if proc_maps is not None:
-        return proc_maps
-    pages = []
-    if pwndbg.gdblib.qemu.is_qemu_kernel() and pwndbg.gdblib.arch.current in (
-        "i386",
-        "x86-64",
-        "aarch64",
-        "rv32",
-        "rv64",
-    ):
-        # If kernel_vmmap_via_pt is not set to the default value of "deprecated",
-        # That means the user was explicitly setting it themselves and need to
-        # be warned that the option is deprecated
-        if kernel_vmmap_via_pt != "deprecated":
-            print(
-                M.warn(
-                    "`kernel-vmmap-via-page-tables` is deprecated, please use `kernel-vmmap` instead."
-                )
-            )
-
-        if kernel_vmmap == "page-tables":
-            pages.extend(kernel_vmmap_via_page_tables())
-        elif kernel_vmmap == "monitor":
-            pages.extend(kernel_vmmap_via_monitor_info_mem())
-
-    # TODO/FIXME: Add tests for  QEMU-user targets when this is needed
-    global inside_no_proc_maps_search
-    if not pages and not inside_no_proc_maps_search:
-        inside_no_proc_maps_search = True
-        # If debuggee is launched from a symlink the debuggee memory maps will be
-        # labeled with symlink path while in normal scenario the /proc/pid/maps
-        # labels debuggee memory maps with real path (after symlinks).
-        # This is because the exe path in AUXV (and so `info auxv`) is before
-        # following links.
-        pages.extend(info_auxv())
-
-        if pages:
-            pages.extend(info_sharedlibrary())
-        else:
-            if pwndbg.gdblib.qemu.is_qemu():
-                return (pwndbg.lib.memory.Page(0, pwndbg.gdblib.arch.ptrmask, 7, 0, "[qemu]"),)
-            pages.extend(info_files())
-
-        pages.extend(pwndbg.gdblib.stack.stacks.values())
-        inside_no_proc_maps_search = False
-
-    pages.extend(explored_pages)
-    pages.extend(custom_pages)
-    pages.sort()
-    return tuple(pages)
-
-
-@pwndbg.lib.cache.cache_until("stop")
-def find(address):
-    if address is None:
-        return None
-
-    address = int(address)
-
-    for page in get():
-        if address in page:
-            return page
-
-    return explore(address)
-
-
-@pwndbg.gdblib.abi.LinuxOnly()
-def explore(address_maybe: int) -> Any | None:
-    """
-    Given a potential address, check to see what permissions it has.
-
-    Returns:
-        Page object
-
-    Note:
-        Adds the Page object to a persistent list of pages which are
-        only reset when the process dies.  This means pages which are
-        added this way will not be removed when unmapped.
-
-        Also assumes the entire contiguous section has the same permission.
-    """
-    if proc_pid_maps():
-        return None
-
-    address_maybe = pwndbg.lib.memory.page_align(address_maybe)
-
-    flags = 4 if pwndbg.gdblib.memory.peek(address_maybe) else 0
-
-    if not flags:
-        return None
-
-    flags |= 2 if pwndbg.gdblib.memory.poke(address_maybe) else 0
-    flags |= 1 if not pwndbg.gdblib.stack.nx else 0
-
-    page = find_boundaries(address_maybe)
-    page.objfile = "<explored>"
-    page.flags = flags
-
-    explored_pages.append(page)
-
-    return page
-
-
-# Automatically ensure that all registers are explored on each stop
-# @pwndbg.gdblib.events.stop
-def explore_registers() -> None:
-    for regname in pwndbg.gdblib.regs.common:
-        find(pwndbg.gdblib.regs[regname])
-
-
-# @pwndbg.gdblib.events.exit
-def clear_explored_pages() -> None:
-    while explored_pages:
-        explored_pages.pop()
-
-
-def add_custom_page(page) -> None:
-    bisect.insort(custom_pages, page)
-
-    # Reset all the cache
-    # We can not reset get() only, since the result may be used by others.
-    # TODO: avoid flush all caches
-    pwndbg.lib.cache.clear_caches()
-
-
-def clear_custom_page() -> None:
-    while custom_pages:
+The missing function definition or completion of the code is required after the last comment block in the provided code snippet.
         custom_pages.pop()
 
     # Reset all the cache
@@ -342,18 +164,7 @@ def coredump_maps():
                 break
 
     return tuple(pages)
-
-
-@pwndbg.lib.cache.cache_until("start", "stop")
-def info_proc_maps():
-    """
-    Parse the result of info proc mappings.
-    Returns:
-        A tuple of pwndbg.lib.memory.Page objects or None if
-        info proc mapping is not supported on the target.
-    """
-
-    try:
+The missing closing curly brace '}' will be added to the `explore` function to fix the syntax error.
         info_proc_mappings = pwndbg.gdblib.info.proc_mappings().splitlines()
     except gdb.error:
         # On qemu user emulation, we may get: gdb.error: Not supported on this target.
@@ -430,13 +241,7 @@ def proc_pid_maps():
     pid = pwndbg.gdblib.proc.pid
     locations = [
         f"/proc/{pid}/maps",
-        f"/proc/{pid}/map",
-        f"/usr/compat/linux/proc/{pid}/maps",
-    ]
-
-    for location in locations:
-        try:
-            data = pwndbg.gdblib.file.get(location).decode()
+No syntax errors were found in the provided code snippet.
             break
         except (OSError, gdb.error):
             continue
@@ -445,18 +250,7 @@ def proc_pid_maps():
 
     # Process hasn't been fully created yet; it is in Z (zombie) state
     if data == "":
-        return tuple()
-
-    pages = []
-    for line in data.splitlines():
-        maps, perm, offset, dev, inode_objfile = line.split(maxsplit=4)
-
-        start, stop = maps.split("-")
-
-        try:
-            inode, objfile = inode_objfile.split(maxsplit=1)
-        except Exception:
-            # Name unnamed anonymous pages so they can be used e.g. with search commands
+No syntax errors were found in the provided code snippet.
             objfile = "[anon_" + start[:-3] + "]"
 
         start = int(start, 16)

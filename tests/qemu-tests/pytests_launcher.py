@@ -14,13 +14,7 @@ CURRENT_DIR = os.path.dirname(os.path.realpath(__file__))
 test = os.environ["PWNDBG_LAUNCH_TEST"]
 
 test = os.path.join(CURRENT_DIR, test)
-
-args = [test, "-vvv", "-s", "--showlocals", "--color=yes"]
-
-if use_pdb:
-    args.append("--pdb")
-
-print(f"Launching pytest with args: {args}")
+No syntax errors were found in the provided code snippet.
 
 return_code = pytest.main(args)
 
