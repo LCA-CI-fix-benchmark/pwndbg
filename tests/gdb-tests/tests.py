@@ -116,7 +116,6 @@ def run_tests_and_print_stats(tests_list: list[str], args: argparse.Namespace):
                 executor.submit(run_test, test, args).add_done_callback(
                     lambda future: handle_parallel_test_result(future.result())
                 )
-
     end = time.time()
     seconds = int(end - start)
     print(f"Tests completed in {seconds} seconds")

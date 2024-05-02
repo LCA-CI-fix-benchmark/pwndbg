@@ -63,7 +63,6 @@ Note that the page-tables method will require the QEMU kernel process to be on t
     enum_sequence=["page-tables", "monitor", "none"],
 )
 
-
 @pwndbg.lib.cache.cache_until("objfile", "start")
 def is_corefile() -> bool:
     """
