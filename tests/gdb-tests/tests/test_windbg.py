@@ -245,7 +245,6 @@ def test_windbg_eX_commands(start_binary):
                 "usage: XX [-h] address [data ...]\n"
                 "XX: error: argument address: Incorrect address (or GDB expression): nonexistentsymbol\n"
             ).replace("XX", cmd_prefix),
-            # This version occurs on CI on Python 3.8.10
             (
                 "usage: XX [-h] address [data [data ...]]\n"
                 "XX: error: argument address: Incorrect address (or GDB expression): nonexistentsymbol\n"

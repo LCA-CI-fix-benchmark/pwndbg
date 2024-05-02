@@ -12,11 +12,18 @@ KERNEL_TYPE = os.getenv("PWNDBG_KERNEL_TYPE")
 KERNEL_VERSION = os.getenv("PWNDBG_KERNEL_VERSION")
 
 
+import pwndbg.gdblib.kernel
+import pwndbg.gdblib.symbol
+
 @pytest.mark.skipif(not pwndbg.gdblib.kernel.has_debug_syms(), reason="test requires debug symbols")
 def test_gdblib_kernel_archops_address_translation():
-    # test address translation functions for LowMem
-    min_low_pfn = int(pwndbg.gdblib.symbol.parse_and_eval("(long)min_low_pfn"))
-    max_low_pfn = int(pwndbg.gdblib.symbol.parse_and_eval("(long)max_low_pfn"))
+    if pwndbg.gdblib.kernel.has_debug_syms():
+        min_low_pfn = int(pwndbg.gdblib.symbol.parse_and_eval("(long)min_low_pfn"))
+        max_low_pfn = int(pwndbg.gdblib.symbol.parse_and_eval("(long)max_low_pfn"))
+        # test address translation functions for LowMem
+        # Add test assertions here
+    else:
+        pytest.skip("Debug symbols not available, skipping test")
     pfns = [min_low_pfn, max_low_pfn]
 
     for pfn in pfns:
