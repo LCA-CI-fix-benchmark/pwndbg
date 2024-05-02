@@ -248,13 +248,11 @@ def test_windbg_eX_commands(start_binary):
             # This version occurs on CI on Python 3.8.10
             (
                 "usage: XX [-h] address [data [data ...]]\n"
-                "XX: error: argument address: Incorrect address (or GDB expression): nonexistentsymbol\n"
-            ).replace("XX", cmd_prefix),
+                "{}: error: argument address: Incorrect address (or GDB expression): nonexistentsymbol\n".format(cmd_prefix),
         )
 
         assert gdb.execute(cmd, to_string=True) in expected_in
         assert gdb.execute(cmd, to_string=True) in expected_in
-
         # With no data arguments provided
         cmd = cmd_prefix + " 0"
         assert gdb.execute(cmd, to_string=True) == "Cannot write empty data into memory.\n"

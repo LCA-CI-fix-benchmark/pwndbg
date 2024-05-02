@@ -106,6 +106,7 @@ def generate_debug_symbols(
         )
         return None
     except Exception as exception:
+        pass
         print(message.error(exception))
         print(message.error("An error occured while generating the debug symbols."))
         return None

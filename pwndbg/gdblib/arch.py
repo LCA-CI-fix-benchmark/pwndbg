@@ -66,6 +66,7 @@ def _get_arch(ptrsize: int):
                 match = match[6:]
             elif match == "riscv":
                 match = "rv64"
+            arch = match
             return match, ptrsize, endian
 
     if not_exactly_arch:

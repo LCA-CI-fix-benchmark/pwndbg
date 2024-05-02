@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
 #include <pthread.h>
 
 void break_here() {}
@@ -11,7 +10,9 @@ int main() {
 
     allocs[0] = malloc(10);
     allocs[1] = malloc(10);
+}
 
+int main() {
     break_here();
 
     allocs[2] = malloc(40);
