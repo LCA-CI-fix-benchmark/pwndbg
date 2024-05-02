@@ -1,8 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
 #include <pthread.h>
+#include <stdlib.h>
 
 void break_here() {}
 
@@ -11,10 +11,11 @@ int main() {
 
     allocs[0] = malloc(10);
     allocs[1] = malloc(10);
+}
 
     break_here();
 
-    allocs[2] = malloc(40);
+#include <stdlib.h>
 
     break_here();
 
@@ -24,10 +25,8 @@ int main() {
 
     allocs[3] = malloc(0x1000);
     allocs[4] = malloc(0x2000);
+    allocs[4] = malloc(0x2000);
     free(allocs[3]);
-
-    break_here();
-
     // mock overflow changing the chunk size
     memset(allocs[0] - sizeof(void*), 'A', 8);
 
