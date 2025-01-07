@@ -6,6 +6,7 @@ import pwndbg.gdblib.heap_tracking
 
 parser = argparse.ArgumentParser(
     formatter_class=argparse.RawTextHelpFormatter,
+    prog="enable-heap-tracker",
     description="""Enables the heap tracker.
 
 The heap tracker is a module that tracks usage of the GLibc heap and looks for
@@ -29,16 +30,22 @@ parser.add_argument(
 
 
 @pwndbg.commands.ArgparsedCommand(parser, command_name="enable-heap-tracker")
-def enable_tracker(use_hardware_breakpoints=False) -> None:
-    pwndbg.gdblib.heap_tracking.install()
+def enable_tracker(use_hardware_breakpoints: bool = False) -> None:
+    if not pwndbg.gdblib.heap_tracking.is_enabled():
+        pwndbg.gdblib.heap_tracking.install()
+    else:
+        print("Heap tracker is already enabled.")
 
 
 parser = argparse.ArgumentParser(description="Disables the heap tracker.")
 
 
 @pwndbg.commands.ArgparsedCommand(parser, command_name="disable-heap-tracker")
-def disable_tracker() -> None:
-    pwndbg.gdblib.heap_tracking.uninstall()
+def disable_tracker() -> None:    if pwndbg.gdblib.heap_tracking.is_enabled():
+        pwndbg.gdblib.heap_tracking.uninstall()
+    else:
+        print("Heap tracker is not enabled.")
+
 
 
 parser = argparse.ArgumentParser(description="Toggles whether possible UAF conditions will pause execution.")
