@@ -54,10 +54,15 @@ def got_call_status():
         print(message.error("GOT call tracking is not enabled"))
         return
 
+    if not pwndbg.gdblib.dynamic.is_dynamic():
+        print(message.error("The current inferior is not dynamically linked"))
+        return
     per_object = {}
     for _, (tracker, _) in pwndbg.gdblib.got.all_tracked_entries():
         objname = tracker.link_map_entry.name()
-        if objname not in per_object:
+        if not objname:
+            objname = pwndbg.gdblib.proc.exe
+        elif objname not in per_object:
             per_object[objname] = []
         per_object[objname].append(tracker)
 
@@ -70,7 +75,9 @@ def got_call_status():
         print(f"GOT entry points for {objname}:")
         for tracker in trackers:
             dynamic = tracker.dynamic_segment
-            sym_index = tracker.relocation_fn(tracker.relocation_index, "r_sym")
+            sym_index = tracker.relocation_fn(tracker.relocation_index, "r_sym") if tracker.relocation_fn else None
+            if sym_index is None:
+                continue
             sym_name = dynamic.symtab_read(sym_index, "st_name")
             sym_name = try_decode(dynamic.string(sym_name))
 
