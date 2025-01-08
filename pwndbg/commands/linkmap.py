@@ -23,7 +23,8 @@ def linkmap():
             name = "<Unknown"
             if is_first:
                 is_first = False
-                name += f", likely {pwndbg.gdblib.proc.exe}"
+                exe_name = pwndbg.gdblib.proc.exe or "<Unnamed Binary>"
+                name += f", likely {exe_name}"  # Handle None case for exe value
             name += ">"
         rows.append(
             [f"{obj.link_map_address:#x}", name, f"{obj.load_bias():#x}", f"{obj.dynamic():#x}"]
