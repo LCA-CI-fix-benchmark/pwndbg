@@ -1,9 +1,5 @@
 name: Unit tests
-on:
-  push:
-    branches:
-      - dev
-  pull_request:
+on: push
 
 jobs:
   tests:
@@ -48,7 +44,7 @@ jobs:
         ./.venv/bin/coverage combine
         ./.venv/bin/coverage xml
 
-    - name: "Upload coverage to Codecov"
+    - name: Upload coverage to Codecov
       if: matrix.os == 'ubuntu-22.04'
       uses: codecov/codecov-action@v3
 
@@ -100,3 +96,7 @@ jobs:
 
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v3
+
+env:
+  PIP_INDEX_URL: https://pypi-wayback-449168051873.europe-west3.run.app/2023-12-29
+  UV_INDEX_URL: https://pypi-wayback-449168051873.europe-west3.run.app/2023-12-29
