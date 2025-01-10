@@ -22,15 +22,18 @@ parser.add_argument(
     "-b",
     "--hardware-breakpoints",
     dest="use_hardware_breakpoints",
-    type=bool,
+    action="store_true",
     default=False,
     help="Force the tracker to use hardware breakpoints.",
 )
 
 
 @pwndbg.commands.ArgparsedCommand(parser, command_name="enable-heap-tracker")
-def enable_tracker(use_hardware_breakpoints=False) -> None:
-    pwndbg.gdblib.heap_tracking.install()
+def enable_tracker(use_hardware_breakpoints: bool = False) -> None:
+    try:
+        pwndbg.gdblib.heap_tracking.install(use_hardware_breakpoints)
+    except Exception as e:
+        print(message.error(f"Failed to enable heap tracker: {e}"))
 
 
 parser = argparse.ArgumentParser(description="Disables the heap tracker.")
@@ -46,8 +49,11 @@ parser = argparse.ArgumentParser(description="Toggles whether possible UAF condi
 
 @pwndbg.commands.ArgparsedCommand(parser, command_name="toggle-heap-tracker-break")
 def toggle_tracker_break() -> None:
-    pwndbg.gdblib.heap_tracking.stop_on_error = not pwndbg.gdblib.heap_tracking.stop_on_error
-    if pwndbg.gdblib.heap_tracking.stop_on_error:
+    try:
+        pwndbg.gdblib.heap_tracking.stop_on_error = not pwndbg.gdblib.heap_tracking.stop_on_error
+        if pwndbg.gdblib.heap_tracking.stop_on_error:
+            print("The program will stop when the heap tracker detects an error")
+        else:
+            print("The heap tracker will only print a message when it detects an error")
+    except Exception as e:
         print("The program will stop when the heap tracker detects an error")
-    else:
-        print("The heap tracker will only print a message when it detects an error")
