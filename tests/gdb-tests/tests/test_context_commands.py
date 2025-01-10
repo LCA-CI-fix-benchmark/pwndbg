@@ -5,6 +5,7 @@ import re
 import gdb
 import pytest
 
+import warnings
 import pwndbg.commands
 import tests
 
