@@ -227,10 +227,62 @@ class Tracker:
                 hi_heap = pwndbg.heap.ptmalloc.Heap(hi_addr - 1)
 
                 # TODO: Can this ever actually fail in real world use?
-                #
-                # It shouldn't be possible, the way glibc implements it[0], to have
+                # It shouldn't be possible, the way glibc implements it, to have
                 # a contiguous range at time t+1 that overlaps with two or more
-                # contiguous ranges that at time t belonged to different heaps.
+                # contiguous ranges that were valid at time t. However, we should
+                # still handle this case gracefully if it happens.
+                assert lo_heap == hi_heap, "Chunk spans multiple heaps"
+
+                # Remove all chunks in the affected range.
+                for addr in list(self.free_chunks.irange(minimum=lo_addr, maximum=hi_addr)):
+                    self.remove_chunk(addr)
+
+        # Register the new chunk
+        if chunk.address in self.alloc_chunks:
+            if PRINT_DEBUG:
+                print(f"Warning: Double allocation of chunk at {chunk.address:#x}")
+        self.alloc_chunks[chunk.address] = chunk
+
+    def free(self, chunk):
+        # Move the chunk from allocated to free map
+        if chunk.address not in self.alloc_chunks:
+            if PRINT_DEBUG:
+                print(f"Warning: Double free of chunk at {chunk.address:#x}")
+            return
+        
+        del self.alloc_chunks[chunk.address]
+        self.free_chunks[chunk.address] = chunk
+
+        # Install watchpoint for UAF detection
+        wp = FreeChunkWatchpoint(chunk, self)
+        self.free_whatchpoints[chunk.address] = wp
+
+    def remove_chunk(self, addr):
+        """Remove a chunk from tracking"""
+        if addr in self.free_chunks:
+            # Remove associated watchpoint
+            if addr in self.free_whatchpoints:
+                self.free_whatchpoints[addr].delete()
+                del self.free_whatchpoints[addr]
+            del self.free_chunks[addr]
+        elif addr in self.alloc_chunks:
+            del self.alloc_chunks[addr]
+
+    def clear(self):
+        """Clear all chunk tracking state"""
+        # Remove all watchpoints
+        for wp in self.free_whatchpoints.values():
+            wp.delete()
+        
+        # Clear all maps
+        self.free_whatchpoints.clear()
+        self.free_chunks.clear() 
+        self.alloc_chunks.clear()
+        self.memory_management_calls.clear()
+
+# Global state
+tracker = Tracker()
+stop_on_error = True at time t belonged to different heaps.
                 #
                 # glibc doesn't move or resize its heaps, which means the boundaries
                 # between them stay fixed, and, since a chunk can only be created
