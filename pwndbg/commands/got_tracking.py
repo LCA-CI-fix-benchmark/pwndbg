@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import sys
+import time
 import argparse
 
 import pwndbg.color.message as message
@@ -29,12 +31,23 @@ def disable_got_tracking():
     pwndbg.gdblib.got.disable_got_call_tracking()
 
 
+MAX_RETRIES = 3
+
 def try_decode(name):
     """
     Ideally, we'd like to display all of the names of the symbols as text, but
     there is really nothing stopping symbol names from being stored in some
     fairly wacky encoding or really from having names that aren't text at all.
 
+    We'll try to decode the name a few times in case there's a transient issue.
+    """
+    retries = 0
+    while retries < MAX_RETRIES:
+        try:
+            return name.decode("ascii")
+        except (UnicodeDecodeError, TypeError):
+            retries += 1
+            time.sleep(0.1)
     We should try our best to turn whatever the symbol name is into text, but
     not so much that non-text entries or entries in unknown encodings become
     unrecognizable.
