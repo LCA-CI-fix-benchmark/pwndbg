@@ -15,7 +15,7 @@ parser = argparse.ArgumentParser(
 
 @pwndbg.commands.ArgparsedCommand(
     parser, category=CommandCategory.LINUX, command_name="enable-got-tracking"
-)
+
 @pwndbg.commands.OnlyWhenRunning
 def enable_got_tracking():
     pwndbg.gdblib.got.enable_got_call_tracking()
@@ -23,7 +23,7 @@ def enable_got_tracking():
 
 @pwndbg.commands.ArgparsedCommand(
     parser, category=CommandCategory.LINUX, command_name="disable-got-tracking"
-)
+
 @pwndbg.commands.OnlyWhenRunning
 def disable_got_tracking():
     pwndbg.gdblib.got.disable_got_call_tracking()
@@ -47,7 +47,7 @@ def try_decode(name):
 
 @pwndbg.commands.ArgparsedCommand(
     parser, category=CommandCategory.LINUX, command_name="got-call-status"
-)
+
 @pwndbg.commands.OnlyWhenRunning
 def got_call_status():
     if not pwndbg.gdblib.got.GOT_TRACKING:
