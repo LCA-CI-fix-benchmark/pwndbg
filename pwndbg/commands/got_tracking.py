@@ -9,6 +9,10 @@ import pwndbg.gdblib.proc
 from pwndbg.commands import CommandCategory
 
 parser = argparse.ArgumentParser(
+    prog="enable-got-tracking",
+    description="Enables the GOT call tracking",
+)
+parser_disable = argparse.ArgumentParser(
     description="Enables the GOT call tracking",
 )
 
@@ -22,12 +26,17 @@ def enable_got_tracking():
 
 
 @pwndbg.commands.ArgparsedCommand(
-    parser, category=CommandCategory.LINUX, command_name="disable-got-tracking"
+    parser_disable, category=CommandCategory.LINUX, command_name="disable-got-tracking"
 )
 @pwndbg.commands.OnlyWhenRunning
 def disable_got_tracking():
+    attempts = 0
+    while pwndbg.gdblib.got.GOT_TRACKING and attempts < 3:
+        try:
+            pwndbg.gdblib.got.disable_got_call_tracking()
+        except Exception:
+            attempts += 1
     pwndbg.gdblib.got.disable_got_call_tracking()
-
 
 def try_decode(name):
     """
