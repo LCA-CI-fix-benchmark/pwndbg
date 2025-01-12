@@ -209,7 +209,39 @@ class Tracker:
         if lo_i > 0:
             left_chunk = self.free_chunks.peekitem(index=lo_i - 1)[1]
             if left_chunk.address + left_chunk.size >= chunk.address:
-                # Include the element to the left in the update.
+                assert lo_heap.arena == hi_heap.arena, "chunks from different arenas"
+                
+                # Remove all chunks in the affected range
+                keys_to_remove = []
+                for addr in self.free_chunks.irange(lo_addr, hi_addr):
+                    keys_to_remove.append(addr)
+                    if addr in self.free_whatchpoints:
+                        self.free_whatchpoints[addr].delete()
+                        del self.free_whatchpoints[addr]
+                
+                for key in keys_to_remove:
+                    del self.free_chunks[key]
+
+        if PRINT_DEBUG:
+            print(f"[*] malloc({chunk.size}) -> {chunk.address:#x}")
+
+        self.alloc_chunks[chunk.address] = chunk
+
+    def free(self, chunk):
+        if chunk.address in self.alloc_chunks:
+            del self.alloc_chunks[chunk.address]
+            
+            # Add to free chunks and set up watchpoint
+            self.free_chunks[chunk.address] = chunk
+            wp = FreeChunkWatchpoint(chunk, self)
+            self.free_whatchpoints[chunk.address] = wp
+
+            if PRINT_DEBUG:
+                print(f"[*] free({chunk.address:#x})")
+        else:
+            print(f"[!] Possible double free of chunk at {chunk.address:#x}")
+            global last_issue
+            last_issue = message.error("Double free") Include the element to the left in the update.
                 lo_i -= 1
 
         try:
