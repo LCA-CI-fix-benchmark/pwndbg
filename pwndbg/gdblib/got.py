@@ -89,6 +89,25 @@ JUMP_SLOTS = {
     "rv32": set([RelocTypes.R_RISCV_JUMP_SLOT]),
     "rv64": set([RelocTypes.R_RISCV_JUMP_SLOT]),
 }
+GOT_TRACKING = False
+TRACKED_ENTRIES = []
+
+def enable_got_call_tracking():
+    """Enable tracking of GOT entries"""
+    global GOT_TRACKING
+    GOT_TRACKING = True
+    print(message.success("GOT call tracking enabled"))
+
+def disable_got_call_tracking():
+    """Disable tracking of GOT entries"""
+    global GOT_TRACKING
+    GOT_TRACKING = False
+    print(message.success("GOT call tracking disabled"))
+
+def all_tracked_entries():
+    """Return all tracked GOT entries"""
+    return TRACKED_ENTRIES
+
 
 # Set of all type codes associated with irelative jump slots, by architecture.
 IRELATIVE_SLOTS = {

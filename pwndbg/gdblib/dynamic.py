@@ -103,13 +103,31 @@ class RDebugLinkMapChangedHook(pwndbg.gdblib.bpoint.BreakpointEvent):
 def r_debug_install_link_map_changed_hook():
     """
     Installs the r_debug-based hook to the change event of the link map.
+    """
+    global R_DEBUG_LINK_MAP_CHANGED_HOOK
 
-    This function is a bit tricky, because ideally we want it to be run as
-    soon as possible, before even the dynamic linker runs, but after both it and
-    the main binary have been mapped into the address space of the inferior.
-    While doing this manually would be trivial - seeing as there is a command
-    in GDB that gives the user control at the exact place we would like -, there
-    does not seem to be a way of easily doing this from inside Python.
+    if not is_dynamic():
+        return False
+
+    if R_DEBUG_LINK_MAP_CHANGED_HOOK is not None:
+        return True
+
+    r_debug = _r_debug()
+    if r_debug is None:
+        print(message.error("Could not find r_debug structure"))
+        return False
+
+    r_brk = pwndbg.gdblib.memory.pvoid(r_debug + pwndbg.gdblib.typeinfo.lookup("r_debug").offsetof("r_brk"))
+    if r_brk == 0:
+        print(message.error("Invalid r_brk address"))
+        return False
+
+    try:
+        R_DEBUG_LINK_MAP_CHANGED_HOOK = RDebugLinkMapChangedHook(f"*{r_brk:#x}")
+        return True
+    except Exception as e:
+        print(message.error(f"Failed to set breakpoint: {e}"))
+        return False from inside Python.
 
     Because of this, parts of the code that rely on the hook should try calling
     this function and firing their own listeners manually at least once.
