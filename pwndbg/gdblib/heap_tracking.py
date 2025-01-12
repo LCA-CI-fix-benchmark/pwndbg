@@ -226,11 +226,48 @@ class Tracker:
                 lo_heap = pwndbg.heap.ptmalloc.Heap(lo_addr)
                 hi_heap = pwndbg.heap.ptmalloc.Heap(hi_addr - 1)
 
-                # TODO: Can this ever actually fail in real world use?
-                #
-                # It shouldn't be possible, the way glibc implements it[0], to have
-                # a contiguous range at time t+1 that overlaps with two or more
-                # contiguous ranges that at time t belonged to different heaps.
+                # Update our view of chunks in the affected range
+                for addr in range(lo_addr, hi_addr):
+                    curr_heap = pwndbg.heap.ptmalloc.Heap(addr)
+                    if curr_heap != lo_heap and curr_heap != hi_heap:
+                        continue
+                        
+                    chunk = curr_heap.chunk(addr)
+                    if not chunk:
+                        continue
+                        
+                    chunk_size = chunk.size
+                    chunk_flags = chunk.flags
+                    
+                    # Remove any existing watchpoints in this range
+                    if addr in self.free_chunks:
+                        old_chunk = self.free_chunks[addr]
+                        if old_chunk.address in self.free_whatchpoints:
+                            self.free_whatchpoints[old_chunk.address].delete()
+                            del self.free_whatchpoints[old_chunk.address]
+                        del self.free_chunks[addr]
+                        
+                    if addr in self.alloc_chunks:
+                        del self.alloc_chunks[addr]
+                        
+                    # Add chunk to appropriate map
+                    new_chunk = Chunk(addr, chunk_size, chunk_size, chunk_flags)
+                    if chunk.is_free():
+                        self.free_chunks[addr] = new_chunk
+                        wp = FreeChunkWatchpoint(new_chunk, self)
+                        self.free_whatchpoints[addr] = wp
+                    else:
+                        self.alloc_chunks[addr] = new_chunk
+
+        # Add the newly allocated chunk
+        self.alloc_chunks[chunk.address] = chunk
+        
+        if PRINT_DEBUG:
+            print(f"malloc: Added chunk {chunk.address:#x} (size={chunk.size})")
+            
+        # Return the chunk address
+        return chunk.address
+ at time t belonged to different heaps.
                 #
                 # glibc doesn't move or resize its heaps, which means the boundaries
                 # between them stay fixed, and, since a chunk can only be created
