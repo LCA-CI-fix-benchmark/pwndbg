@@ -177,6 +177,12 @@ class Tracker:
         thread = gdb.selected_thread().global_num
         if thread not in self.memory_management_calls:
             return False
+
+        if PRINT_DEBUG:
+            print(f"Thread {thread} is in one of the following memory management calls:")
+            for name, is_set in self.memory_management_calls.items():
+                if is_set:
+                    print(f" - {name}")
         else:
             return self.memory_management_calls[thread]
 
