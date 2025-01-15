@@ -91,6 +91,8 @@ class RDebugLinkMapChangedHook(pwndbg.gdblib.bpoint.BreakpointEvent):
         # Clear the cache that is tied to link map updates, and signal all of
         # the interested parties that this event has occurred.
         pwndbg.lib.cache.clear_cache("link_map")
+        pwndbg.lib.cache.clear_cache("got_call_tracking")
+        pwndbg.lib.cache.clear_cache("dynamic")
         for listener in R_DEBUG_LINK_MAP_CHANGED_LISTENERS:
             listener()
 

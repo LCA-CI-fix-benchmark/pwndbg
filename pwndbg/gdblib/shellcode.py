@@ -105,4 +105,4 @@ def exec_shellcode(blob, restore_context=True, capture=None):
         for reg, val in registers.items():
             setattr(pwndbg.gdblib.regs, reg, val)
 
-    return captured
+    return captured, "got_call_tracking"
