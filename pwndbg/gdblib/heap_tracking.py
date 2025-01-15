@@ -227,10 +227,38 @@ class Tracker:
                 hi_heap = pwndbg.heap.ptmalloc.Heap(hi_addr - 1)
 
                 # TODO: Can this ever actually fail in real world use?
-                #
-                # It shouldn't be possible, the way glibc implements it[0], to have
-                # a contiguous range at time t+1 that overlaps with two or more
-                # contiguous ranges that at time t belonged to different heaps.
+                # Update our chunk maps in this range
+                for addr in range(lo_addr, hi_addr):
+                    try:
+                        chunk = pwndbg.heap.ptmalloc.get_chunk(addr)
+                        if chunk and chunk.is_allocated():
+                            self.add_allocated_chunk(chunk)
+                        elif chunk:
+                            self.add_free_chunk(chunk)
+                    except:
+                        continue
+
+        finally:
+            # Add the new allocated chunk
+            self.alloc_chunks[chunk.address] = chunk
+
+    def add_allocated_chunk(self, chunk):
+        # Remove any watchpoints for this chunk
+        if chunk.address in self.free_whatchpoints:
+            self.free_whatchpoints[chunk.address].delete()
+            del self.free_whatchpoints[chunk.address]
+        # Add to allocated chunks map
+        self.alloc_chunks[chunk.address] = chunk
+
+    def add_free_chunk(self, chunk):
+        # Add watchpoint for UAF detection
+        wp = FreeChunkWatchpoint(chunk, self)
+        self.free_whatchpoints[chunk.address] = wp
+        # Add to free chunks map
+        self.free_chunks[chunk.address] = chunk
+
+# Initialize global tracker
+tracker = Tracker() at time t belonged to different heaps.
                 #
                 # glibc doesn't move or resize its heaps, which means the boundaries
                 # between them stay fixed, and, since a chunk can only be created
