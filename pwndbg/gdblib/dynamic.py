@@ -53,7 +53,17 @@ def is_dynamic():
     not be used at all with programs that don't participate in dynamic linkage,
     or when there is a dynamic linker, but we have no way to talk to it.
     """
-    return _r_debug() is not None
+    try:
+        address = gdb.execute("output/x &_r_debug", to_string=True)
+        address = int(address, 0)
+        return address is not None
+    except gdb.error:
+        # Symbol is most likely unavailable.
+        return False
+    # Install hook
+    r_debug_link_map_changed_hook = pwndbg.gdblib.bpoint.BreakpointEvent()
+    r_debug_link_map_changed_hook.skip_this = True
+    gdb.events.link_map.connect(r_debug_link_map_changed_hook.on_breakpoint_hit)
 
 
 # Reference to our hook in the link map update breakpoint, if it is installed.
