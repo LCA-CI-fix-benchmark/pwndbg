@@ -64,7 +64,6 @@ def _handle_stop(event):
         # We have nothing to do here.
         return
 
-    print("Handling BPStop")
     should_continue = True
     for bp in event.breakpoints:
         if id(bp) not in REGISTERED_BP_EVENTS:
