@@ -40,7 +40,7 @@ def try_decode(name):
     unrecognizable.
     """
     try:
-        return name.decode("ascii")
+        return name.decode("utf-8")
     except TypeError:
         return name
 
