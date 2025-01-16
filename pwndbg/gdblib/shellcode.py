@@ -20,6 +20,17 @@ def _get_syscall_return_value():
     Reads the value corresponding to the return value of a syscall that has
     just returned.
     """
+def exec_syscall(
+    syscall, arg0=None, arg1=None, arg2=None, arg3=None, arg4=None, arg5=None, arg6=None
+):
+    """
+    Tries executing the given syscall in the context of the inferior.
+    """
+    # Build machine code that runs the requested syscall.
+    syscall_asm = pwnlib.shellcraft.syscall(syscall, arg0, arg1, arg2, arg3, arg4, arg5)
+    syscall_bin = pwnlib.asm.asm(syscall_asm)
+    # Run the syscall and pass its return value onward to the caller.
+    return exec_shellcode(syscall_bin, restore_context=True, capture=_get_syscall_return_value)
 
     register_set = pwndbg.lib.regs.reg_sets[pwndbg.gdblib.arch.current]
     return pwndbg.gdblib.regs[register_set.retval]
