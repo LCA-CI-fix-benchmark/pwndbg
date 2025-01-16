@@ -227,10 +227,72 @@ class Tracker:
                 hi_heap = pwndbg.heap.ptmalloc.Heap(hi_addr - 1)
 
                 # TODO: Can this ever actually fail in real world use?
-                #
-                # It shouldn't be possible, the way glibc implements it[0], to have
-                # a contiguous range at time t+1 that overlaps with two or more
-                # contiguous ranges that at time t belonged to different heaps.
+                assert lo_heap == hi_heap, "chunks from different heaps"
+
+                # Remove all chunks that overlap with the range [lo_addr, hi_addr).
+                for k in list(self.free_chunks.irange(lo_addr, hi_addr)):
+                    chunk = self.free_chunks.pop(k)
+                    if chunk.address in self.free_whatchpoints:
+                        self.free_whatchpoints.pop(chunk.address).delete()
+
+        except (IndexError, KeyError):
+            # No overlap, nothing to do.
+            pass
+
+        # Finally, add the new chunk.
+        self.alloc_chunks[chunk.address] = chunk
+
+    def free(self, chunk):
+        if chunk.address in self.alloc_chunks:
+            self.alloc_chunks.pop(chunk.address)
+            self.free_chunks[chunk.address] = chunk
+            wp = FreeChunkWatchpoint(chunk, self)
+            self.free_whatchpoints[chunk.address] = wp
+        else:
+            print(f"[!] Possible double free of chunk at address {chunk.address:#x}")
+            global stop_on_error
+            if stop_on_error:
+                global last_issue
+                last_issue = message.error("Double free")
+            return stop_on_error
+
+        return False
+
+def in_program_code_stack():
+    """
+    Returns whether the current instruction pointer points to code loaded from
+    the program binary or is in its stack.
+    """
+    pc = pwndbg.gdblib.regs.pc
+    sp = pwndbg.gdblib.regs.sp
+
+    vmmap = pwndbg.gdblib.vmmap.get()
+    if not vmmap:
+        return False
+
+    # Find the mapping that contains the program counter.
+    pcmap = None
+    for m in vmmap:
+        if pc >= m.vaddr and pc < m.vaddr + m.size:
+            pcmap = m
+            break
+
+    # Find the mapping that contains the stack pointer.
+    spmap = None
+    for m in vmmap:
+        if sp >= m.vaddr and sp < m.vaddr + m.size:
+            spmap = m
+            break
+
+    if not pcmap or not spmap:
+        return False
+
+    return "[stack]" in spmap.objfile or pcmap.objfile == pwndbg.gdblib.proc.exe
+
+# Public API
+stop_on_error = True
+malloc_enter = None
+free_enter = None at time t belonged to different heaps.
                 #
                 # glibc doesn't move or resize its heaps, which means the boundaries
                 # between them stay fixed, and, since a chunk can only be created
