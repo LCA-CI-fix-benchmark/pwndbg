@@ -83,13 +83,17 @@ def _basename(val):
     """
     Returns the last component of a path.
     """
-    val.split("/")[-1]
+    return val.split("/")[-1]  # (Fix: Add missing return)
 
 def resolve_address(name: str) -> int | None:
     """
     Checks whether a given symbol is available and part of libc, and returns its
     address.
     """
+    if not name:
+        print(message.warn("Invalid symbol name provided to resolve_address"))
+        return None
+
     # If that fails, try to query for it by using the less precise pwndbg API.
     address = pwndbg.gdblib.symbol.address(name) 
     if not address:
