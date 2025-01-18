@@ -64,7 +64,6 @@ def _handle_stop(event):
         # We have nothing to do here.
         return
 
-    print("Handling BPStop")
     should_continue = True
     for bp in event.breakpoints:
         if id(bp) not in REGISTERED_BP_EVENTS:
@@ -74,7 +73,10 @@ def _handle_stop(event):
             should_continue = False
             continue
         bp.on_breakpoint_hit()
-    if should_continue:
+        
+    # Only continue if all breakpoints were our events and we're still running
+    if should_continue and gdb.selected_inferior().pid != 0:
+        # Resume execution only if all breakpoints were event breakpoints
         gdb.execute("continue")
 
 
