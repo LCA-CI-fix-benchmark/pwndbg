@@ -227,10 +227,47 @@ class Tracker:
                 hi_heap = pwndbg.heap.ptmalloc.Heap(hi_addr - 1)
 
                 # TODO: Can this ever actually fail in real world use?
-                #
-                # It shouldn't be possible, the way glibc implements it[0], to have
-                # a contiguous range at time t+1 that overlaps with two or more
-                # contiguous ranges that at time t belonged to different heaps.
+                assert lo_heap == hi_heap, "overlapping chunks belong to different heaps"
+                
+                # Remove overlapping chunks and their watchpoints
+                for addr in list(self.free_chunks.irange(lo_addr, hi_addr)):
+                    self._remove_chunk(addr)
+                    
+        # Add the new chunk
+        self.alloc_chunks[chunk.address] = chunk
+        
+    def free(self, chunk):
+        # Remove from allocated chunks
+        if chunk.address in self.alloc_chunks:
+            del self.alloc_chunks[chunk.address]
+            
+        # Add to free chunks and set watchpoint
+        self.free_chunks[chunk.address] = chunk
+        wp = FreeChunkWatchpoint(chunk, self)
+        self.free_whatchpoints[chunk.address] = wp
+        
+    def _remove_chunk(self, addr):
+        """Remove a chunk and its associated watchpoint if it exists"""
+        if addr in self.free_chunks:
+            del self.free_chunks[addr]
+            
+        if addr in self.free_whatchpoints:
+            wp = self.free_whatchpoints[addr]
+            wp.delete()
+            del self.free_whatchpoints[addr]
+            
+    def clear(self):
+        """Clear all tracked chunks and watchpoints"""
+        self.alloc_chunks.clear()
+        
+        # Remove all watchpoints
+        for addr in list(self.free_whatchpoints):
+            wp = self.free_whatchpoints[addr]
+            wp.delete()
+            
+        self.free_whatchpoints.clear()
+        self.free_chunks.clear()
+        self.memory_management_calls.clear() at time t belonged to different heaps.
                 #
                 # glibc doesn't move or resize its heaps, which means the boundaries
                 # between them stay fixed, and, since a chunk can only be created
