@@ -103,13 +103,42 @@ class RDebugLinkMapChangedHook(pwndbg.gdblib.bpoint.BreakpointEvent):
 def r_debug_install_link_map_changed_hook():
     """
     Installs the r_debug-based hook to the change event of the link map.
-
+    
     This function is a bit tricky, because ideally we want it to be run as
     soon as possible, before even the dynamic linker runs, but after both it and
     the main binary have been mapped into the address space of the inferior.
     While doing this manually would be trivial - seeing as there is a command
     in GDB that gives the user control at the exact place we would like -, there
-    does not seem to be a way of easily doing this from inside Python.
+    does not seem to be a way of easily doing this programmatically.
+    """
+    global R_DEBUG_LINK_MAP_CHANGED_HOOK
+
+    if not is_dynamic():
+        return
+
+    if R_DEBUG_LINK_MAP_CHANGED_HOOK is not None:
+        return
+
+    debug = pwndbg.gdblib.memory.poi(pwndbg.gdblib.typeinfo.lookup_types(['struct r_debug*']), _r_debug())
+    r_brk = debug['r_brk']
+
+    if r_brk == 0:
+        print(message.warn("Could not find r_brk in r_debug structure"))
+        return
+
+    R_DEBUG_LINK_MAP_CHANGED_HOOK = RDebugLinkMapChangedHook(f"*{r_brk:#x}")
+
+def register_link_map_change_listener(listener):
+    """
+    Registers a callback to be called whenever the link map changes.
+    """
+    R_DEBUG_LINK_MAP_CHANGED_LISTENERS.add(listener)
+
+def unregister_link_map_change_listener(listener):
+    """
+    Unregisters a previously registered link map change callback.
+    """
+    R_DEBUG_LINK_MAP_CHANGED_LISTENERS.remove(listener) from inside Python.
 
     Because of this, parts of the code that rely on the hook should try calling
     this function and firing their own listeners manually at least once.
