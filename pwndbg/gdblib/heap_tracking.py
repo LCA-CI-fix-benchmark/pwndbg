@@ -209,7 +209,56 @@ class Tracker:
         if lo_i > 0:
             left_chunk = self.free_chunks.peekitem(index=lo_i - 1)[1]
             if left_chunk.address + left_chunk.size >= chunk.address:
-                # Include the element to the left in the update.
+                # were at time t distinct, according to its implementation of coalescing.
+                assert lo_heap.arena == hi_heap.arena, "Chunks from different arenas?"
+                
+                # Remove the overlapping chunks from our maps
+                chunks_to_remove = []
+                for addr in self.free_chunks.irange(lo_addr, hi_addr):
+                    chunks_to_remove.append(addr)
+                    if addr in self.free_whatchpoints:
+                        self.free_whatchpoints[addr].delete()
+                        del self.free_whatchpoints[addr]
+                
+                for addr in chunks_to_remove:
+                    del self.free_chunks[addr]
+
+        # Register the new chunk
+        if chunk.address in self.alloc_chunks:
+            if PRINT_DEBUG:
+                print(f"[DEBUG] malloc(): Chunk at {chunk.address:#x} is already tracked as allocated")
+            return
+
+        self.alloc_chunks[chunk.address] = chunk
+
+    def free(self, chunk):
+        if chunk.address not in self.alloc_chunks:
+            if PRINT_DEBUG:
+                print(f"[DEBUG] free(): Chunk at {chunk.address:#x} is not tracked")
+            return
+
+        # Move chunk from allocated to free map
+        self.free_chunks[chunk.address] = chunk
+        del self.alloc_chunks[chunk.address]
+
+        # Install watchpoint to detect use-after-free
+        wp = FreeChunkWatchpoint(chunk, self)
+        self.free_whatchpoints[chunk.address] = wp
+
+    def realloc(self, old_chunk, new_chunk):
+        # Handle like a free + malloc
+        if old_chunk:
+            self.free(old_chunk)
+        if new_chunk:
+            self.malloc(new_chunk)
+
+    def uninstall(self):
+        # Remove all watchpoints
+        for addr in self.free_whatchpoints:
+            self.free_whatchpoints[addr].delete()
+        self.free_whatchpoints.clear()
+        self.free_chunks.clear()
+        self.alloc_chunks.clear() Include the element to the left in the update.
                 lo_i -= 1
 
         try:
