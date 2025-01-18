@@ -230,7 +230,26 @@ class Tracker:
                 #
                 # It shouldn't be possible, the way glibc implements it[0], to have
                 # a contiguous range at time t+1 that overlaps with two or more
-                # contiguous ranges that at time t belonged to different heaps.
+                # contiguous ranges that were contiguous at time t.
+                #
+                # [0]: https://sourceware.org/git/?p=glibc.git;a=blob;f=malloc/malloc.c
+                assert lo_heap.start == hi_heap.start, "Chunks span multiple heaps"
+
+                self._update_chunk_range(lo_addr, hi_addr)
+
+        self.alloc_chunks[chunk.address] = chunk
+
+    def _update_chunk_range(self, start_addr, end_addr):
+        """Updates the chunk maps for chunks in the given address range."""
+        # Remove any chunks and their watchpoints that fall within this range
+        for addr in list(self.free_chunks.irange(start_addr, end_addr)):
+            if addr in self.free_whatchpoints:
+                self.free_whatchpoints[addr].delete()
+                del self.free_whatchpoints[addr]
+            del self.free_chunks[addr]
+
+        for addr in list(self.alloc_chunks.irange(start_addr, end_addr)):
+            del self.alloc_chunks[addr] at time t belonged to different heaps.
                 #
                 # glibc doesn't move or resize its heaps, which means the boundaries
                 # between them stay fixed, and, since a chunk can only be created
