@@ -53,6 +53,9 @@ def is_dynamic():
     not be used at all with programs that don't participate in dynamic linkage,
     or when there is a dynamic linker, but we have no way to talk to it.
     """
+    # Check if the dynamic linker is present and functional
+    if not _r_debug():
+        return False
     return _r_debug() is not None
 
 
