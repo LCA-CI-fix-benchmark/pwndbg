@@ -45,7 +45,7 @@ parser = argparse.ArgumentParser(description="Toggles whether possible UAF condi
 
 
 @pwndbg.commands.ArgparsedCommand(parser, command_name="toggle-heap-tracker-break")
-def toggle_tracker_break() -> None:
+def toggle_tracker_break(args) -> None:
     pwndbg.gdblib.heap_tracking.stop_on_error = not pwndbg.gdblib.heap_tracking.stop_on_error
     if pwndbg.gdblib.heap_tracking.stop_on_error:
         print("The program will stop when the heap tracker detects an error")
