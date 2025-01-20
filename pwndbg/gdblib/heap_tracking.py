@@ -91,7 +91,10 @@ def resolve_address(name: str) -> int | None:
     address.
     """
     # If that fails, try to query for it by using the less precise pwndbg API.
-    address = pwndbg.gdblib.symbol.address(name) 
+    address = gdb.execute(f"info address {name}", to_string=True)
+    if "No symbol" in address:
+        return None
+    address = int(address.split(" ")[-1], 16)
     if not address:
         # Nothing that we can do here.
         return None
