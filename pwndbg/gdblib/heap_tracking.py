@@ -83,7 +83,7 @@ def _basename(val):
     """
     Returns the last component of a path.
     """
-    val.split("/")[-1]
+    return val.split("/")[-1]
 
 def resolve_address(name: str) -> int | None:
     """

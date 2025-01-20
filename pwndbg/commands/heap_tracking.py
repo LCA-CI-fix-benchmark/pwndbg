@@ -30,7 +30,8 @@ parser.add_argument(
 
 @pwndbg.commands.ArgparsedCommand(parser, command_name="enable-heap-tracker")
 def enable_tracker(use_hardware_breakpoints=False) -> None:
-    pwndbg.gdblib.heap_tracking.install()
+    if not pwndbg.gdblib.heap_tracking.is_enabled():
+        pwndbg.gdblib.heap_tracking.install()
 
 
 parser = argparse.ArgumentParser(description="Disables the heap tracker.")
@@ -38,7 +39,8 @@ parser = argparse.ArgumentParser(description="Disables the heap tracker.")
 
 @pwndbg.commands.ArgparsedCommand(parser, command_name="disable-heap-tracker")
 def disable_tracker() -> None:
-    pwndbg.gdblib.heap_tracking.uninstall()
+    if pwndbg.gdblib.heap_tracking.is_enabled():
+        pwndbg.gdblib.heap_tracking.uninstall()
 
 
 parser = argparse.ArgumentParser(description="Toggles whether possible UAF conditions will pause execution.")
