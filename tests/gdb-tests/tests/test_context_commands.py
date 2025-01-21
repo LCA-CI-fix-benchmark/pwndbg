@@ -146,7 +146,7 @@ def test_source_code_tabstop(start_binary):
 
 
 def test_context_disasm_syscalls_args_display(start_binary):
-    start_binary(SYSCALLS_BINARY)
+    start_binary(SYSCALLS_BINARY, flags=["-fpie"])
     gdb.execute("nextsyscall")
     dis = gdb.execute("context disasm", to_string=True)
     assert dis == (
