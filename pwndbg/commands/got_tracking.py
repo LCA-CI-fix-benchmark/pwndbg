@@ -66,6 +66,7 @@ def got_call_status():
             objname = pwndbg.gdblib.proc.exe
         else:
             objanme = try_decode(objname)
+           objname = try_decode(objname)
 
         print(f"GOT entry points for {objname}:")
         for tracker in trackers:
