@@ -83,7 +83,7 @@ def test_empty_context_sections(start_binary, sections):
     # Sanity check
     default_ctx_sects = "regs disasm code ghidra stack backtrace expressions threads"
     assert pwndbg.gdblib.config.context_sections.value == default_ctx_sects
-    assert gdb.execute("context", to_string=True) != ""
+    assert gdb.execute("context", to_string=True) != "" # Ensure the context command works as expected
 
     # Actual test check
     gdb.execute(f"set context-sections {sections}", to_string=True)
