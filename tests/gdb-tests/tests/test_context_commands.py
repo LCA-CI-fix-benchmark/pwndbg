@@ -258,7 +258,7 @@ def test_context_disasm_works_properly_with_disasm_flavor_switch(start_binary):
     assert_att(out)
 
 
-@pytest.mark.parametrize("patch_or_api", (True, False))
+@pytest.mark.parametrize("patch_or_api", (True, False), ids=["Patch", "API"])
 def test_context_disasm_proper_render_on_mem_change_issue_1818(start_binary, patch_or_api):
     start_binary(SYSCALLS_BINARY)
 

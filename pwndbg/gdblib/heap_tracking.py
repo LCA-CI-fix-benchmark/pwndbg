@@ -83,7 +83,7 @@ def _basename(val):
     """
     Returns the last component of a path.
     """
-    val.split("/")[-1]
+    return val.split("/")[-1]
 
 def resolve_address(name: str) -> int | None:
     """
@@ -109,7 +109,7 @@ def resolve_address(name: str) -> int | None:
     info = gdb.execute(f"info symbol {address:#x}", to_string=True, from_tty=False)
     info = info.split(" of ")[-1].split("/")[-1]
     if not info or LIBC_NAME not in info:
-        print(message.warn(f"Instance of symbol {name} that was found does not seem to belong to an instance of libc whose name is in the form {LIBC_NAME}. Refusing to use."))
+        print(message.warn(f"Instance of symbol {name} found in {info} does not belong to libc. Skipping."))
         return None
     
     return address
@@ -452,6 +452,7 @@ class ReallocExitBreakpoint(gdb.FinishBreakpoint):
             self.tracker.exit_memory_management()
 
             print(f"[!] realloc() with previously unknown pointer {self.freed_ptr:#x}")
+           print(message.warn(f"[!] realloc() with previously unknown pointer {self.freed_ptr:#x}"))
 
             global stop_on_error
             return stop_on_error
