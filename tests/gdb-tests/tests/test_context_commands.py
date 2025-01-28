@@ -7,6 +7,7 @@ import pytest
 
 import pwndbg.commands
 import tests
+from tests.utils import get_test_output
 
 USE_FDS_BINARY = tests.binaries.get("use-fds.out")
 TABSTOP_BINARY = tests.binaries.get("tabstop.out")
@@ -293,3 +294,33 @@ def test_context_disasm_proper_render_on_mem_change_issue_1818(start_binary, pat
     assert "mov    esi, 0xdeadbeef" in new[8]
     assert "mov    ecx, 0x10" in new[9]
     assert "syscall" in new[10]
+
+
+@pytest.mark.parametrize(
+    "command",
+    [
+        "k",
+        "peb", 
+        "stepuntilasm",
+        "bins",
+        "tips",
+        "setflag",
+        "ai",
+        "bc",
+        "comm",
+        "pwndbg",
+        "brva",
+        "ez",
+        "lm",
+        "be",
+        "xpsr",
+        "argv"
+    ]
+)
+def test_commands(start_binary, command):
+    """Test that commands don't crash when run"""
+    start_binary(USE_FDS_BINARY)
+    
+    out = get_test_output(command) 
+    # We just verify the command runs without error
+    assert isinstance(out, str)
