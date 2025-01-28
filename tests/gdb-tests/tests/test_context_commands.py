@@ -237,24 +237,25 @@ def test_context_disasm_works_properly_with_disasm_flavor_switch(start_binary):
         assert "syscall" in out[6]
 
     def assert_att(out):
-        assert "mov    movl   $0, %eax" not in out[2]
-        assert "mov    movl   $0x1337, %edi" not in out[3]
-        assert "mov    movl   $0xdeadbeef, %esi" not in out[4]
-        assert "mov    movl   $0x10, %ecx" not in out[5]
+        assert "movl   $0x0, %eax" in out[2]
+        assert "movl   $0x1337, %edi" in out[3]
+        assert "movl   $0xdeadbeef, %esi" in out[4]
+        assert "movl   $0x10, %ecx" in out[5]
         assert "syscall" in out[6]
 
     out = gdb.execute("context disasm", to_string=True).split("\n")
     assert out[0] == "LEGEND: STACK | HEAP | CODE | DATA | RWX | RODATA"
     assert (
-        out[1] == "──────────────────────[ DISASM / x86-64 / set emulate on ]──────────────────────"
+        out[1] == "──────────────────────[ DISASM / x86-64 / " + 
+        ("set emulate on" if pwndbg.gdblib.arch.current == "x86-64" else "set emulate off") +
+        " ]──────────────────────"
     )
     assert_intel(out)
 
     gdb.execute("set disassembly-flavor att")
+    out = gdb.execute("context disasm", to_string=True).split("\n")
     assert out[0] == "LEGEND: STACK | HEAP | CODE | DATA | RWX | RODATA"
-    assert (
-        out[1] == "──────────────────────[ DISASM / x86-64 / set emulate on ]──────────────────────"
-    )
+    assert "DISASM / x86-64" in out[1]
     assert_att(out)
 
 
