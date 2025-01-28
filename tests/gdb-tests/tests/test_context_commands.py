@@ -4,6 +4,7 @@ import re
 
 import gdb
 import pytest
+from pytest import xfail
 
 import pwndbg.commands
 import tests
