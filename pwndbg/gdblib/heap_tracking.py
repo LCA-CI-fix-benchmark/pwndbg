@@ -201,6 +201,12 @@ class Tracker:
         self.memory_management_calls[thread] = False
 
     def malloc(self, chunk):
+        # Check if the chunk is already in the alloc_chunks map.
+        # If it is, this means the chunk was already allocated and
+        # we don't need to do anything.
+        if chunk.address in self.alloc_chunks:
+            return
+
         # malloc()s may arbitrarily change the structure of freed blocks, to the
         # point our chunk maps may become invalid, so, we update them here if
         # anything looks wrong.
