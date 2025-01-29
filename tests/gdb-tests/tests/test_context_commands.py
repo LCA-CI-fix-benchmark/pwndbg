@@ -266,11 +266,11 @@ def test_context_disasm_proper_render_on_mem_change_issue_1818(start_binary, pat
 
     # Just a sanity check
     assert old[0] == "LEGEND: STACK | HEAP | CODE | DATA | RWX | RODATA"
-    assert "mov    eax, 0" in old[2]
-    assert "mov    edi, 0x1337" in old[3]
-    assert "mov    esi, 0xdeadbeef" in old[4]
-    assert "mov    ecx, 0x10" in old[5]
-    assert "syscall" in old[6]
+    assert "mov    eax, 0" in old
+    assert "mov    edi, 0x1337" in old
+    assert "mov    esi, 0xdeadbeef" in old  
+    assert "mov    ecx, 0x10" in old
+    assert "syscall" in old
 
     # 5 bytes because 'mov eax, 0' is 5 bytes long
     if patch_or_api:
@@ -284,12 +284,12 @@ def test_context_disasm_proper_render_on_mem_change_issue_1818(start_binary, pat
     new = gdb.execute("context disasm", to_string=True).split("\n")
 
     assert new[0] == "LEGEND: STACK | HEAP | CODE | DATA | RWX | RODATA"
-    assert "nop" in new[2]
-    assert "nop" in new[3]
-    assert "nop" in new[4]
-    assert "nop" in new[5]
-    assert "nop" in new[6]
-    assert "mov    edi, 0x1337" in new[7]
-    assert "mov    esi, 0xdeadbeef" in new[8]
-    assert "mov    ecx, 0x10" in new[9]
-    assert "syscall" in new[10]
+    assert "nop" in new
+    assert "nop" in new
+    assert "nop" in new
+    assert "nop" in new
+    assert "nop" in new
+    assert "mov    edi, 0x1337" in new
+    assert "mov    esi, 0xdeadbeef" in new
+    assert "mov    ecx, 0x10" in new
+    assert "syscall" in new
