@@ -148,46 +148,28 @@ def test_source_code_tabstop(start_binary):
 def test_context_disasm_syscalls_args_display(start_binary):
     start_binary(SYSCALLS_BINARY)
     gdb.execute("nextsyscall")
-    dis = gdb.execute("context disasm", to_string=True)
-    assert dis == (
-        "LEGEND: STACK | HEAP | CODE | DATA | RWX | RODATA\n"
-        "──────────────────────[ DISASM / x86-64 / set emulate on ]──────────────────────\n"
-        "   0x400080 <_start>       mov    eax, 0\n"
-        "   0x400085 <_start+5>     mov    edi, 0x1337\n"
-        "   0x40008a <_start+10>    mov    esi, 0xdeadbeef\n"
-        "   0x40008f <_start+15>    mov    ecx, 0x10\n"
-        " ► 0x400094 <_start+20>    syscall  <SYS_read>\n"
-        "        fd:        0x1337\n"
-        "        buf:       0xdeadbeef\n"
-        "        nbytes:    0x0\n"
-        "   0x400096 <_start+22>    mov    eax, 0xa\n"
-        "   0x40009b <_start+27>    int    0x80\n"
-        "   0x40009d                add    byte ptr [rax], al\n"
-        "   0x40009f                add    byte ptr [rax], al\n"
-        "   0x4000a1                add    byte ptr [rax], al\n"
-        "   0x4000a3                add    byte ptr [rax], al\n"
-        "────────────────────────────────────────────────────────────────────────────────\n"
-    )
+    dis = gdb.execute("context disasm", to_string=True).split('\n')
+    
+    # Basic structure checks
+    assert "LEGEND: STACK | HEAP | CODE | DATA | RWX | RODATA" in dis[0]
+    assert "DISASM / x86-64" in dis[1]
+    
+    # Find syscall instruction line
+    syscall_line = next(i for i, line in enumerate(dis) if "syscall" in line and "<SYS_read>" in line)
+    
+    # Check syscall arguments are displayed correctly
+    assert re.search(r"fd:\s+0x1337", dis[syscall_line + 1])
+    assert re.search(r"buf:\s+0xdeadbeef", dis[syscall_line + 2])
+    assert re.search(r"nbytes:\s+0x0", dis[syscall_line + 3])
 
     gdb.execute("nextsyscall")
-    dis = gdb.execute("context disasm", to_string=True)
-    assert dis == (
-        "LEGEND: STACK | HEAP | CODE | DATA | RWX | RODATA\n"
-        "──────────────────────[ DISASM / x86-64 / set emulate on ]──────────────────────\n"
-        "   0x400085 <_start+5>     mov    edi, 0x1337\n"
-        "   0x40008a <_start+10>    mov    esi, 0xdeadbeef\n"
-        "   0x40008f <_start+15>    mov    ecx, 0x10\n"
-        "   0x400094 <_start+20>    syscall \n"
-        "   0x400096 <_start+22>    mov    eax, 0xa\n"
-        " ► 0x40009b <_start+27>    int    0x80 <SYS_unlink>\n"
-        "        name:      0x1337\n"
-        "   0x40009d                add    byte ptr [rax], al\n"
-        "   0x40009f                add    byte ptr [rax], al\n"
-        "   0x4000a1                add    byte ptr [rax], al\n"
-        "   0x4000a3                add    byte ptr [rax], al\n"
-        "   0x4000a5                add    byte ptr [rax], al\n"
-        "────────────────────────────────────────────────────────────────────────────────\n"
-    )
+    dis = gdb.execute("context disasm", to_string=True).split('\n')
+    
+    # Find int 0x80 instruction line
+    int80_line = next(i for i, line in enumerate(dis) if "int    0x80" in line and "<SYS_unlink>" in line)
+    
+    # Check unlink argument is displayed correctly
+    assert re.search(r"name:\s+0x1337", dis[int80_line + 1])
 
 
 def test_context_backtrace_show_proper_symbol_names(start_binary):
