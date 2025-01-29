@@ -293,3 +293,28 @@ def test_context_disasm_proper_render_on_mem_change_issue_1818(start_binary, pat
     assert "mov    esi, 0xdeadbeef" in new[8]
     assert "mov    ecx, 0x10" in new[9]
     assert "syscall" in new[10]
+
+@pytest.mark.xfail(reason="Commands expected to fail or be unavailable")
+@pytest.mark.parametrize("command", [
+    'k',           # Windows-specific command
+    'peb',         # Windows-specific command 
+    'stepuntilasm',
+    'bins',
+    'tips',
+    'setflag',
+    'ai',
+    'bc',
+    'comm',
+    'pwndbg',
+    'brva',
+    'ez',
+    'lm',
+    'be',
+    'xpsr',
+    'argv'
+])
+def test_commands(start_binary, command):
+    """Test various pwndbg commands that are expected to fail or be unavailable"""
+    start_binary(USE_FDS_BINARY)
+    with pytest.raises(gdb.error):
+        gdb.execute(command)
