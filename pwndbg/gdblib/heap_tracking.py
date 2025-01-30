@@ -118,7 +118,7 @@ class FreeChunkWatchpoint(gdb.Breakpoint):
     def __init__(self, chunk, tracker):
         self.chunk = chunk
         self.tracker = tracker
-
+        
         language = gdb.execute("show language", to_string=True)
         if "rust" in language:
             loc = f"*({chunk.address:#x} as *mut [u8;{chunk.size}])"
@@ -170,7 +170,7 @@ class Tracker:
     def __init__(self):
         self.free_chunks = SortedDict()
         self.alloc_chunks = SortedDict()
-        self.free_whatchpoints = dict()
+        self.free_watchpoints = dict()
         self.memory_management_calls = dict()
 
     def is_performing_memory_management(self):
@@ -250,8 +250,8 @@ class Tracker:
                 for i in reversed(range(lo_i, hi_i)):
                     addr, ch = self.free_chunks.popitem(index=i)
 
-                    self.free_whatchpoints[addr].delete()
-                    del self.free_whatchpoints[addr]
+                    self.free_watchpoints[addr].delete()
+                    del self.free_watchpoints[addr]
 
                 # Add new handlers in their place. We scan over all of the chunks in
                 # the heap in the range of affected chunks, and add the ones that
@@ -295,7 +295,7 @@ class Tracker:
                             wp = FreeChunkWatchpoint(nch, self)
 
                             self.free_chunks[ch.address] = nch
-                            self.free_whatchpoints[ch.address] = wp
+                            self.free_watchpoints[ch.address] = wp
 
                             # Move on to the next chunk.
                             found = True
@@ -316,7 +316,7 @@ class Tracker:
         wp = FreeChunkWatchpoint(chunk, self)
 
         self.free_chunks[chunk.address] = chunk
-        self.free_whatchpoints[chunk.address] = wp
+        self.free_watchpoints[chunk.address] = wp
 
         return True
 
@@ -498,7 +498,7 @@ class FreeExitBreakpoint(gdb.FinishBreakpoint):
             # This is a chunk we'd never seen before.
             self.tracker.exit_memory_management()
             
-            print(f"[!] free() with previously unknown pointer {self.freed_ptr:#x}")
+            print(f"[!] free() with previously unknown pointer {self.ptr:#x}")
             global stop_on_error
             return stop_on_error
 
@@ -566,7 +566,7 @@ def install(disable_hardware_whatchpoints=True):
     # consistency and so that we don't have to chase silent failures.
     #
     # [1]: https://sourceware.org/gdb/onlinedocs/gdb/Set-Watchpoints.html
-    if disable_hardware_whatchpoints:
+    if disable_hardware_watchpoints:
         gdb.execute("set can-use-hw-watchpoints 0")
         print("Hardware watchpoints have been disabled. Please do not turn them back on until")
         print("heap tracking is disabled, as it may lead to unexpected silent errors.")
