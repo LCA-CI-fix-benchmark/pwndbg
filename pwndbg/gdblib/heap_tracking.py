@@ -580,7 +580,16 @@ def install(disable_hardware_whatchpoints=True):
         print()
 
     # Install the heap tracker.
+    tracker = install_heap_tracker(disable_hardware_whatchpoints)
+    
+    print("Heap tracker installed.")
+    
+def install_heap_tracker(disable_hardware_whatchpoints=True):
     tracker = Tracker()
+    global malloc_enter
+    global calloc_enter  
+    global realloc_enter
+    global free_enter
 
     malloc_enter = MallocEnterBreakpoint(available[0], tracker)
     free_enter = FreeEnterBreakpoint(available[1], tracker)
@@ -592,15 +601,21 @@ def install(disable_hardware_whatchpoints=True):
     realloc_address = resolve_address(REALLOC_NAME)
     if realloc_address:
         realloc_enter = ReallocEnterBreakpoint(realloc_address, tracker)
-
-    print("Heap tracker installed.")
-
+        
+    return tracker
 
 def uninstall():
     global malloc_enter
     global calloc_enter
     global realloc_enter
     global free_enter
+    
+    uninstall_heap_tracker()
+    print("Heap tracker removed.")
+    
+def uninstall_heap_tracker():    
+    global malloc_enter, calloc_enter, realloc_enter, free_enter
+    breakpoints = [malloc_enter, calloc_enter, realloc_enter, free_enter]
 
     if is_enabled():
         malloc_enter.delete()
@@ -614,8 +629,6 @@ def uninstall():
             calloc_enter = None
         if realloc_enter is not None:
             realloc_enter.delete()
-            realloc_enter = None
-
-        print("Heap tracker removed.")
+            realloc_enter = None          
     else:
         print("Nothing to do.")

@@ -43,6 +43,9 @@ def disable_tracker() -> None:
 
 parser = argparse.ArgumentParser(description="Toggles whether possible UAF conditions will pause execution.")
 
+@pwndbg.commands.ArgparsedCommand(parser, command_name="toggle-heap-tracker-break")
+def toggle_tracker_break() -> None:
+    pwndbg.gdblib.heap_tracking.toggle_break_on_error()
 
 @pwndbg.commands.ArgparsedCommand(parser, command_name="toggle-heap-tracker-break")
 def toggle_tracker_break() -> None:
