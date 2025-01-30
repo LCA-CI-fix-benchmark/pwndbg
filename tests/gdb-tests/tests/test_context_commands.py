@@ -236,10 +236,10 @@ def test_context_disasm_works_properly_with_disasm_flavor_switch(start_binary):
         assert "mov    ecx, 0x10" in out[5]
         assert "syscall" in out[6]
 
-    def assert_att(out):
-        assert "mov    movl   $0, %eax" not in out[2]
-        assert "mov    movl   $0x1337, %edi" not in out[3]
-        assert "mov    movl   $0xdeadbeef, %esi" not in out[4]
+    def assert_att(out): 
+        assert "movl   $0, %eax" in out[2]
+        assert "movl   $0x1337, %edi" in out[3] 
+        assert "movl   $0xdeadbeef, %esi" in out[4]
         assert "mov    movl   $0x10, %ecx" not in out[5]
         assert "syscall" in out[6]
 
@@ -249,6 +249,8 @@ def test_context_disasm_works_properly_with_disasm_flavor_switch(start_binary):
         out[1] == "──────────────────────[ DISASM / x86-64 / set emulate on ]──────────────────────"
     )
     assert_intel(out)
+    
+    out = gdb.execute("context disasm", to_string=True).split("\n")
 
     gdb.execute("set disassembly-flavor att")
     assert out[0] == "LEGEND: STACK | HEAP | CODE | DATA | RWX | RODATA"
