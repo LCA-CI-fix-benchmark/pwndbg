@@ -498,7 +498,7 @@ class FreeExitBreakpoint(gdb.FinishBreakpoint):
             # This is a chunk we'd never seen before.
             self.tracker.exit_memory_management()
             
-            print(f"[!] free() with previously unknown pointer {self.freed_ptr:#x}")
+            print(f"[!] free() with previously unknown pointer {self.ptr:#x}")
             global stop_on_error
             return stop_on_error
 

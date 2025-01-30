@@ -30,7 +30,7 @@ parser.add_argument(
 
 @pwndbg.commands.ArgparsedCommand(parser, command_name="enable-heap-tracker")
 def enable_tracker(use_hardware_breakpoints=False) -> None:
-    pwndbg.gdblib.heap_tracking.install()
+    pwndbg.gdblib.heap_tracking.install(disable_hardware_watchpoints=not use_hardware_breakpoints)
 
 
 parser = argparse.ArgumentParser(description="Disables the heap tracker.")
